@@ -1,0 +1,111 @@
+/* Universal Section Wrapper Styles */
+.section-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+  color: #ffffff;
+  font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+}
+
+/* Section Header - Consistent across all sections */
+.section-wrapper-header {
+  background: linear-gradient(90deg, rgba(0, 255, 136, 0.15), rgba(0, 204, 255, 0.15));
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid rgba(0, 255, 136, 0.3);
+  border-radius: 0.75rem 0.75rem 0 0;
+  margin-bottom: 0;
+}
+
+.section-wrapper-title {
+  margin: 0 0 0.5rem 0;
+  color: #00ff88;
+  font-size: 1.5rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.section-icon {
+  font-size: 1.25rem;
+  opacity: 0.9;
+}
+
+.section-wrapper-subtitle {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.95rem;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+/* Section Content - Standardized container */
+.section-wrapper-content {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+  background: rgba(26, 26, 58, 0.3);
+  border-radius: 0 0 0.75rem 0.75rem;
+  min-height: 0; /* Allow flexbox to work properly */
+}
+
+/* Scrollbar styling for content areas */
+.section-wrapper-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.section-wrapper-content::-webkit-scrollbar-track {
+  background: rgba(26, 26, 58, 0.3);
+  border-radius: 4px;
+}
+
+.section-wrapper-content::-webkit-scrollbar-thumb {
+  background: rgba(0, 255, 136, 0.3);
+  border-radius: 4px;
+}
+
+.section-wrapper-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 255, 136, 0.5);
+}
+
+/* Theme variations for different sections */
+.section-wrapper.chat-theme .section-wrapper-header {
+  background: linear-gradient(90deg, rgba(0, 255, 136, 0.15), rgba(0, 255, 136, 0.05));
+}
+
+.section-wrapper.peers-theme .section-wrapper-header {
+  background: linear-gradient(90deg, rgba(0, 204, 255, 0.15), rgba(0, 204, 255, 0.05));
+}
+
+.section-wrapper.dev-theme .section-wrapper-header {
+  background: linear-gradient(90deg, rgba(255, 170, 0, 0.15), rgba(255, 170, 0, 0.05));
+}
+
+.section-wrapper.fun-theme .section-wrapper-header {
+  background: linear-gradient(90deg, rgba(255, 68, 68, 0.15), rgba(255, 68, 68, 0.05));
+}
+
+.section-wrapper.info-theme .section-wrapper-header {
+  background: linear-gradient(90deg, rgba(170, 170, 255, 0.15), rgba(170, 170, 255, 0.05));
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .section-wrapper-header {
+    padding: 1rem 1.5rem;
+  }
+  
+  .section-wrapper-title {
+    font-size: 1.25rem;
+  }
+  
+  .section-wrapper-subtitle {
+    font-size: 0.85rem;
+  }
+  
+  .section-wrapper-content {
+    padding: 1.5rem;
+  }
+}

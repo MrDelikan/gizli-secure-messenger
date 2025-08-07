@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { SectionWrapper } from './SectionWrapper';
 import { NetworkAnalytics, type RealNetworkMetrics } from '../utils/NetworkAnalytics';
 import { securityLogger, type RealSecurityEvent } from '../utils/SecurityLogger';
 import { configManager, type AppConfig } from '../utils/ConfigurationManager';

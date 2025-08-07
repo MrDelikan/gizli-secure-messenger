@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { SectionWrapper } from './SectionWrapper';
 import './ChatInterface.css';
 
 interface Message {
@@ -248,7 +249,12 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
 
   if (!currentPeer) {
     return (
-      <div className="chat-interface no-peer">
+      <SectionWrapper
+        title="Secure Chat"
+        subtitle="Connect to a peer to start end-to-end encrypted messaging"
+        icon="💬"
+        className="chat-theme"
+      >
         <div className="login-container">
           <div className="login-welcome">
             <h2>🔒 Welcome to Gizli</h2>
@@ -342,16 +348,17 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
             )}
           </div>
         </div>
-      </div>
+      </SectionWrapper>
     );
   }
 
   return (
-    <div className="chat-interface">
-      <div className="chat-header">
-        <h3>Secure Chat with {truncateKey(currentPeer)}</h3>
-      </div>
-
+    <SectionWrapper
+      title="Secure Chat"
+      subtitle={`Encrypted conversation with ${truncateKey(currentPeer)}`}
+      icon="💬"
+      className="chat-theme"
+    >
       <div className="messages-container">
         {messages.length === 0 ? (
           <div className="no-messages">
@@ -400,6 +407,6 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
           </small>
         </div>
       </form>
-    </div>
+    </SectionWrapper>
   );
 };
