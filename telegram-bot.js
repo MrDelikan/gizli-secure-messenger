@@ -377,11 +377,6 @@ Gizli is a cutting-edge secure messaging application designed for maximum privac
 • iOS (Web App + TestFlight)
 • Web browsers (PWA)
 • Desktop (coming soon)
-
-🔗 *Links:*
-• Source Code: https://github.com/your-repo
-• Documentation: https://docs.your-domain.com
-• Security Audit: Available on request
     `;
     
     bot.sendMessage(chatId, infoMessage, { parse_mode: 'Markdown' });
