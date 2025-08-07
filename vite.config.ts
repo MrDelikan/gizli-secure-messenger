@@ -75,7 +75,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           crypto: ['libsodium-wrappers', '@noble/curves', '@noble/ciphers', '@noble/hashes'],
-          networking: ['socket.io-client', 'simple-peer'],
+          networking: ['simple-peer'],
           react: ['react', 'react-dom'],
           vendor: ['joi']
         }
