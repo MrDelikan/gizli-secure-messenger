@@ -33,6 +33,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
   const [connectionStatus, setConnectionStatus] = useState<'ready' | 'connecting' | 'connected' | 'error'>('ready');
   const [statusMessage, setStatusMessage] = useState<string>('');
   const [isGeneratingKeys, setIsGeneratingKeys] = useState(false);
+  const [previousPublicKey, setPreviousPublicKey] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -56,7 +57,8 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
 
   useEffect(() => {
     // Auto-copy new key to clipboard after generation
-    if (isGeneratingKeys && publicKey) {
+    // This triggers when publicKey changes (new key generated) or during manual generation
+    if (publicKey && (isGeneratingKeys || (previousPublicKey && previousPublicKey !== publicKey))) {
       const copyNewKey = async () => {
         try {
           await navigator.clipboard.writeText(publicKey);
@@ -70,11 +72,15 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
           alert(`🔑 New keys generated successfully!\n\nYour new public key:\n\n${publicKey}\n\n(Automatic clipboard copy failed - please copy manually)`);
         } finally {
           setIsGeneratingKeys(false);
+          setPreviousPublicKey(publicKey);
         }
       };
       copyNewKey();
+    } else if (publicKey && !previousPublicKey) {
+      // Initial key load (app startup) - just track it, don't copy
+      setPreviousPublicKey(publicKey);
     }
-  }, [publicKey, isGeneratingKeys]);
+  }, [publicKey, isGeneratingKeys, previousPublicKey]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

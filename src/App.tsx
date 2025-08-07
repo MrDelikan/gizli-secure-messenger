@@ -136,8 +136,7 @@ function App() {
         setPublicKey(newPublicKey);
         setIsInitialized(true);
         
-        // Show the new public key to the user
-        alert(`New key pair generated!\n\nYour new Public Key:\n${newPublicKey}\n\nShare this key with others to establish secure connections.`);
+        // Note: ChatInterface will handle clipboard copy and user notification
       } catch (error) {
         console.error('Failed to generate new keys:', error);
         alert('Failed to generate new keys');
