@@ -1,9 +1,13 @@
-/* ChatInterface.css - Futuristic Mobile-First Design */
+/* ChatInterface.css - UNIFIED LAYOUT */
+@import '../styles/unified-design-system.css';
+
 .chat-interface {
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: linear-gradient(135deg, rgba(26, 26, 46, 0.3) 0%, rgba(22, 33, 62, 0.3) 100%);
+  max-width: 1200px;
+  margin: 0 auto;
+  background: transparent;
   position: relative;
   overflow: hidden;
 }

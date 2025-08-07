@@ -231,15 +231,15 @@ function App() {
         </div>
       </header>
 
-      {/* Tab Content */}
-      <main className="app-main mobile-main">
+      {/* Tab Content - UNIFIED DESIGN */}
+      <main className="page-container">
         {renderTabContent()}
       </main>
 
-      {/* Mobile Bottom Navigation */}
-      <nav className="mobile-nav">
+      {/* Mobile Bottom Navigation - UNIFIED DESIGN */}
+      <nav className="nav-tabs">
         <button 
-          className={`nav-btn ${activeTab === 'chat' ? 'active' : ''}`}
+          className={`nav-tab ${activeTab === 'chat' ? 'active' : ''}`}
           onClick={() => setActiveTab('chat')}
           aria-label="Chat"
         >
@@ -247,7 +247,7 @@ function App() {
           <span className="nav-label">Chat</span>
         </button>
         <button 
-          className={`nav-btn ${activeTab === 'peers' ? 'active' : ''}`}
+          className={`nav-tab ${activeTab === 'peers' ? 'active' : ''}`}
           onClick={() => setActiveTab('peers')}
           aria-label="Peers"
         >
@@ -255,7 +255,7 @@ function App() {
           <span className="nav-label">Peers</span>
         </button>
         <button 
-          className={`nav-btn ${activeTab === 'dev' ? 'active' : ''}`}
+          className={`nav-tab ${activeTab === 'dev' ? 'active' : ''}`}
           onClick={() => setActiveTab('dev')}
           aria-label="Developer Console"
         >
@@ -263,7 +263,7 @@ function App() {
           <span className="nav-label">Dev</span>
         </button>
         <button 
-          className={`nav-btn ${activeTab === 'fun' ? 'active' : ''}`}
+          className={`nav-tab ${activeTab === 'fun' ? 'active' : ''}`}
           onClick={() => setActiveTab('fun')}
           aria-label="Entertainment Hub"
         >
@@ -271,7 +271,7 @@ function App() {
           <span className="nav-label">Fun</span>
         </button>
         <button 
-          className={`nav-btn ${activeTab === 'info' ? 'active' : ''}`}
+          className={`nav-tab ${activeTab === 'info' ? 'active' : ''}`}
           onClick={() => setActiveTab('info')}
           aria-label="Info"
         >
