@@ -240,6 +240,21 @@
   background: linear-gradient(135deg, #0a0a19 0%, #1a1a3a 50%, #0f0f2a 100%);
 }
 
+/* Mobile Header Fixes */
+.mobile-app .app-header {
+  position: relative;
+  z-index: 1000;
+  flex-shrink: 0;
+}
+
+.mobile-app .header-main {
+  padding: 1rem 1rem 0.5rem 1rem;
+}
+
+.mobile-app .header-controls {
+  padding: 0.5rem 1rem 1rem 1rem;
+}
+
 /* Loading State */
 .app.loading {
   justify-content: center;
@@ -758,6 +773,8 @@
 @media (max-width: 480px) {
   .app-header {
     flex-direction: column;
+    /* Add safe area support for mobile notches */
+    padding-top: env(safe-area-inset-top, 0);
   }
   
   .header-main {
@@ -799,6 +816,12 @@
     padding: 0.4rem 0.8rem;
     font-size: 0.7rem;
     border-radius: 15px;
+  }
+  
+  /* Ensure mobile content doesn't get cut off */
+  .mobile-app {
+    padding-top: env(safe-area-inset-top, 0);
+    padding-bottom: env(safe-area-inset-bottom, 0);
   }
 }
 
