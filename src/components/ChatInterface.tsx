@@ -32,6 +32,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
   const [lastError, setLastError] = useState<string | null>(null);
   const [connectionStatus, setConnectionStatus] = useState<'ready' | 'connecting' | 'connected' | 'error'>('ready');
   const [statusMessage, setStatusMessage] = useState<string>('');
+  const [isGeneratingKeys, setIsGeneratingKeys] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -52,6 +53,28 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
       setStatusMessage('Secure connection established');
     }
   }, [publicKey, currentPeer]);
+
+  useEffect(() => {
+    // Auto-copy new key to clipboard after generation
+    if (isGeneratingKeys && publicKey) {
+      const copyNewKey = async () => {
+        try {
+          await navigator.clipboard.writeText(publicKey);
+          setConnectionStatus('ready');
+          setStatusMessage('New keys generated and copied to clipboard!');
+          alert(`🔑 New keys generated successfully!\n\nYour new public key has been copied to clipboard:\n\n${publicKey.substring(0, 32)}...\n\n✅ Ready to share with peers!`);
+        } catch (clipboardError) {
+          console.error('Failed to copy to clipboard:', clipboardError);
+          setConnectionStatus('ready');
+          setStatusMessage('New keys generated successfully');
+          alert(`🔑 New keys generated successfully!\n\nYour new public key:\n\n${publicKey}\n\n(Automatic clipboard copy failed - please copy manually)`);
+        } finally {
+          setIsGeneratingKeys(false);
+        }
+      };
+      copyNewKey();
+    }
+  }, [publicKey, isGeneratingKeys]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -181,13 +204,20 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
     try {
       console.log('Generating new keys...');
       setLastError(null);
+      setConnectionStatus('connecting');
+      setStatusMessage('Generating new keys...');
+      setIsGeneratingKeys(true);
+      
       await onGenerateNewKeys();
       console.log('Keys generated successfully');
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Key generation failed';
       console.error('Key generation failed:', error);
       setLastError(errorMessage);
-      alert(`Key generation failed: ${errorMessage}`);
+      setConnectionStatus('error');
+      setStatusMessage('Key generation failed');
+      setIsGeneratingKeys(false);
+      alert(`❌ Key generation failed: ${errorMessage}`);
     }
   };
 
@@ -260,8 +290,12 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
             </div>
             
             <div className="quick-actions">
-              <button className="action-btn generate-key" onClick={handleGenerateKeys}>
-                🔑 Generate New Keys
+              <button 
+                className="action-btn generate-key" 
+                onClick={handleGenerateKeys}
+                disabled={isGeneratingKeys}
+              >
+                {isGeneratingKeys ? '🔄 Generating Keys...' : '🔑 Generate New Keys'}
               </button>
               <button className="action-btn share-key" onClick={handleShareKey}>
                 📋 Share Public Key
