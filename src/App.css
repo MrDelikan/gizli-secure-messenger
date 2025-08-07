@@ -1,0 +1,638 @@
+/* App.css - Enhanced for Mobile App Layout */
+
+/* Base App Styles */
+.app {
+  min-height: 100vh;
+  background: 
+    radial-gradient(circle at 20% 20%, rgba(0, 255, 136, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(0, 162, 255, 0.1) 0%, transparent 50%),
+    linear-gradient(135deg, rgba(10, 10, 25, 0.95) 0%, rgba(15, 15, 35, 0.95) 50%, rgba(5, 5, 15, 0.95) 100%);
+  color: #ffffff;
+  font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* Mobile App Override */
+.app.mobile-app {
+  height: 100vh;
+  height: 100dvh;
+  max-height: 100vh;
+  max-height: 100dvh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0a0a19 0%, #1a1a3a 100%);
+}
+
+/* Loading State */
+.app.loading {
+  justify-content: center;
+  align-items: center;
+}
+
+.loading-container {
+  text-align: center;
+  padding: 2rem;
+  background: rgba(26, 26, 58, 0.8);
+  border-radius: 1rem;
+  border: 1px solid rgba(0, 255, 136, 0.2);
+  backdrop-filter: blur(20px);
+  max-width: 400px;
+  margin: 0 1rem;
+}
+
+.loading-logo {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+  border: 2px solid rgba(0, 255, 136, 0.3);
+}
+
+.loading-container h2 {
+  color: #00ff88;
+  margin-bottom: 0.5rem;
+  font-size: 1.25rem;
+}
+
+.loading-container p {
+  color: rgba(224, 224, 224, 0.8);
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+}
+
+.loader {
+  width: 3rem;
+  height: 3rem;
+  border: 3px solid rgba(0, 255, 136, 0.2);
+  border-top: 3px solid #00ff88;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.app-header {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(15, 15, 35, 0.8) 100%);
+  -webkit-backdrop-filter: blur(15px);
+  backdrop-filter: blur(15px);
+  border-bottom: 2px solid;
+  border-image: linear-gradient(90deg, #00ff88, #00a2ff, #00ff88) 1;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 10;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* Main header section with logo and branding */
+.header-main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+}
+
+/* Futuristic corner elements */
+.app-header::before,
+.app-header::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #00ff88;
+}
+
+.app-header::before {
+  top: 10px;
+  left: 10px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.app-header::after {
+  bottom: 10px;
+  right: 10px;
+  border-left: none;
+  border-top: none;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  position: relative;
+}
+
+/* Brand text container */
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  position: relative;
+}
+
+/* Enhanced logo with holographic effect */
+.app-logo {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid transparent;
+  background: linear-gradient(45deg, #00ff88, #00a2ff, #ff0080, #00ff88);
+  background-size: 400% 400%;
+  animation: holographic 3s ease-in-out infinite, rotate 20s linear infinite;
+  box-shadow: 
+    0 0 30px rgba(0, 255, 136, 0.4),
+    inset 0 0 30px rgba(0, 255, 136, 0.1);
+  position: relative;
+}
+
+.app-logo::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #00ff88, #00a2ff, #ff0080, #00ff88);
+  background-size: 400% 400%;
+  animation: holographic 3s ease-in-out infinite reverse;
+  z-index: -1;
+  opacity: 0.3;
+}
+
+@keyframes holographic {
+  0%, 100% {
+    background-position: 0% 50%;
+    filter: hue-rotate(0deg);
+  }
+  50% {
+    background-position: 100% 50%;
+    filter: hue-rotate(180deg);
+  }
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.app-header h1 {
+  margin: 0;
+  background: linear-gradient(45deg, #00ff88, #00a2ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 2.4rem;
+  font-weight: 700;
+  text-shadow: 0 0 30px rgba(0, 255, 136, 0.5);
+  letter-spacing: 2px;
+  position: relative;
+}
+
+/* Futuristic text effect */
+.app-header h1::after {
+  content: 'Gizli';
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: linear-gradient(45deg, #00ff88, #00a2ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: textGlitch 4s ease-in-out infinite;
+  opacity: 0.7;
+}
+
+@keyframes textGlitch {
+  0%, 90%, 100% {
+    transform: translate(0);
+    filter: hue-rotate(0deg);
+  }
+  10% {
+    transform: translate(-2px, 2px);
+    filter: hue-rotate(90deg);
+  }
+  20% {
+    transform: translate(2px, -2px);
+    filter: hue-rotate(180deg);
+  }
+}
+
+/* Privacy tagline that melts into the logo */
+.privacy-tagline {
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  background: linear-gradient(45deg, rgba(0, 255, 136, 0.6), rgba(0, 162, 255, 0.6));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  opacity: 0.8;
+  position: relative;
+  margin-top: -5px;
+  text-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+  animation: privacyGlow 4s ease-in-out infinite;
+}
+
+.privacy-tagline::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -10px;
+  right: -10px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.3), transparent);
+  transform: translateY(-50%);
+  opacity: 0.5;
+}
+
+@keyframes privacyGlow {
+  0%, 100% {
+    opacity: 0.6;
+    filter: blur(0px);
+  }
+  50% {
+    opacity: 0.9;
+    filter: blur(0.5px);
+  }
+}
+
+/* Header controls container - now below the main header */
+.header-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(15, 15, 35, 0.4) 100%);
+  border-top: 1px solid rgba(0, 162, 255, 0.2);
+}
+
+/* Info button styles */
+.info-button {
+  background: linear-gradient(135deg, rgba(0, 255, 136, 0.1) 0%, rgba(0, 162, 255, 0.1) 100%);
+  border: 2px solid rgba(0, 255, 136, 0.3);
+  color: #00ff88;
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.info-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.2), transparent);
+  transition: left 0.6s ease;
+}
+
+.info-button:hover {
+  border-color: rgba(0, 255, 136, 0.6);
+  color: #ffffff;
+  box-shadow: 
+    0 0 20px rgba(0, 255, 136, 0.3),
+    inset 0 0 20px rgba(0, 255, 136, 0.1);
+  transform: translateY(-2px);
+}
+
+.info-button:hover::before {
+  left: 100%;
+}
+
+.info-button:active {
+  transform: translateY(0);
+}
+
+/* Entertainment button styles */
+.entertainment-button {
+  background: linear-gradient(135deg, rgba(255, 0, 100, 0.1) 0%, rgba(255, 165, 0, 0.1) 100%);
+  border: 2px solid rgba(255, 0, 100, 0.3);
+  color: #ff0064;
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  margin-right: 1rem;
+}
+
+.entertainment-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 0, 100, 0.2), transparent);
+  transition: left 0.6s ease;
+}
+
+.entertainment-button:hover {
+  border-color: rgba(255, 0, 100, 0.6);
+  color: #ffffff;
+  box-shadow: 
+    0 0 20px rgba(255, 0, 100, 0.3),
+    inset 0 0 20px rgba(255, 0, 100, 0.1);
+  transform: translateY(-2px);
+}
+
+.entertainment-button:hover::before {
+  left: 100%;
+}
+
+.entertainment-button:active {
+  transform: translateY(0);
+}
+
+/* Developer Console button styles */
+.developer-button {
+  background: linear-gradient(135deg, rgba(0, 255, 255, 0.1) 0%, rgba(0, 162, 255, 0.1) 100%);
+  border: 2px solid rgba(0, 255, 255, 0.3);
+  color: #00ffff;
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  margin-right: 1rem;
+}
+
+.developer-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.2), transparent);
+  transition: left 0.6s ease;
+}
+
+.developer-button:hover {
+  border-color: rgba(0, 255, 255, 0.6);
+  color: #ffffff;
+  box-shadow: 
+    0 0 20px rgba(0, 255, 255, 0.3),
+    inset 0 0 20px rgba(0, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.developer-button:hover::before {
+  left: 100%;
+}
+
+.developer-button:active {
+  transform: translateY(0);
+}
+
+.app-main {
+  display: flex;
+  height: calc(100vh - 80px);
+}
+
+.sidebar {
+  width: 320px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.4) 0%, rgba(15, 15, 35, 0.6) 100%);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-right: 2px solid;
+  border-image: linear-gradient(180deg, #00ff88, transparent, #00a2ff) 1;
+  overflow-y: auto;
+  position: relative;
+  z-index: 5;
+}
+
+/* Futuristic sidebar corners */
+.sidebar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-left: 20px solid rgba(0, 255, 136, 0.3);
+  border-bottom: 20px solid transparent;
+}
+
+.sidebar::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-left: 20px solid rgba(0, 162, 255, 0.3);
+  border-top: 20px solid transparent;
+}
+
+.chat-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-section.full-width {
+  width: 100%;
+  max-width: none;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .app-main {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    width: 100%;
+    height: 40vh;
+  }
+  
+  .chat-section {
+    height: 60vh;
+  }
+  
+  .app-header {
+    flex-direction: column;
+  }
+  
+  .header-main {
+    padding: 1rem;
+  }
+  
+  .header-controls {
+    padding: 0.8rem 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  /* Mobile-optimized logo and branding */
+  .app-logo {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .app-header h1 {
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+  }
+  
+  .privacy-tagline {
+    font-size: 0.6rem;
+    letter-spacing: 2px;
+    margin-top: -3px;
+  }
+  
+  .logo-container {
+    gap: 1rem;
+  }
+  
+  .header-controls {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+  
+  /* Smaller buttons for mobile */
+  .info-button,
+  .developer-button,
+  .entertainment-button {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* Enhanced mobile styles for iOS and Android */
+@media (max-width: 480px) {
+  .app-header {
+    flex-direction: column;
+  }
+  
+  .header-main {
+    padding: 0.8rem;
+  }
+  
+  .header-controls {
+    padding: 0.6rem 0.8rem;
+    gap: 0.3rem;
+  }
+  
+  .app-logo {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .app-header h1 {
+    font-size: 1.2rem;
+    letter-spacing: 0.5px;
+  }
+  
+  .privacy-tagline {
+    font-size: 0.5rem;
+    letter-spacing: 1.5px;
+    margin-top: -2px;
+  }
+  
+  .logo-container {
+    gap: 0.8rem;
+  }
+  
+  .header-controls {
+    gap: 0.3rem;
+  }
+  
+  .info-button,
+  .developer-button,
+  .entertainment-button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.7rem;
+    border-radius: 15px;
+  }
+}
+
+/* Security theme colors - Enhanced Futuristic */
+:root {
+  --primary-green: #00ff88;
+  --secondary-green: #00cc6a;
+  --accent-blue: #00a2ff;
+  --accent-purple: #8a2be2;
+  --accent-pink: #ff0080;
+  --danger-red: #ff4757;
+  --warning-orange: #ffa726;
+  --bg-dark: #0a0a19;
+  --bg-darker: #050510;
+  --text-light: #ffffff;
+  --text-muted: #cccccc;
+  --border-light: rgba(255, 255, 255, 0.1);
+  --glow-green: rgba(0, 255, 136, 0.4);
+  --glow-blue: rgba(0, 162, 255, 0.4);
+}
+
+/* Futuristic scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(45deg, #00ff88, #00a2ff);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(45deg, #00cc6a, #0088cc);
+}
+
+/* Selection styling */
+::selection {
+  background: rgba(0, 255, 136, 0.3);
+  color: #ffffff;
+}
+
+::-moz-selection {
+  background: rgba(0, 255, 136, 0.3);
+  color: #ffffff;
+}

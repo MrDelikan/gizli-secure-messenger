@@ -1,0 +1,554 @@
+/* Mobile App Layout - Enhanced */
+
+/* Mobile App Root Styles */
+.app.mobile-app {
+  height: 100vh !important;
+  height: 100dvh !important;
+  max-height: 100vh !important;
+  max-height: 100dvh !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  background: linear-gradient(135deg, #0a0a19 0%, #1a1a3a 100%) !important;
+  color: #e0e0e0 !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  z-index: 1 !important;
+}
+
+/* Desktop fallback - ensure mobile styles don't affect desktop */
+.app:not(.mobile-app) {
+  position: relative !important;
+  height: auto !important;
+  min-height: 100vh !important;
+}
+
+/* Mobile Header */
+.mobile-header {
+  flex-shrink: 0;
+  background: rgba(10, 10, 25, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(0, 255, 136, 0.1);
+  padding: env(safe-area-inset-top, 0.5rem) 1rem 0.75rem;
+  z-index: 1000;
+  position: relative;
+}
+
+.header-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.app-logo {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(0, 255, 136, 0.3);
+}
+
+.brand-text h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+  background: linear-gradient(45deg, #00ff88, #00ccff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 0.1em;
+}
+
+/* Main Content Area */
+.mobile-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+  min-height: 0;
+  position: relative;
+}
+
+/* Mobile Bottom Navigation */
+.mobile-nav {
+  display: flex;
+  background: rgba(10, 10, 25, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(0, 255, 136, 0.1);
+  padding: 0.5rem 0;
+  padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0));
+  flex-shrink: 0;
+  z-index: 1000;
+  position: relative;
+}
+
+.nav-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.5rem 0.25rem;
+  background: none;
+  border: none;
+  color: rgba(224, 224, 224, 0.6);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.75rem;
+  min-height: 3rem;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  outline: none;
+}
+
+.nav-btn:hover,
+.nav-btn.active {
+  color: #00ff88;
+  background: rgba(0, 255, 136, 0.05);
+  border-radius: 0.5rem;
+  transform: scale(1.02);
+}
+
+.nav-btn:active {
+  transform: scale(0.98);
+}
+
+.nav-icon {
+  font-size: 1.25rem;
+  margin-bottom: 0.125rem;
+  line-height: 1;
+  display: block;
+}
+
+.nav-label {
+  font-weight: 500;
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  text-transform: capitalize;
+}
+
+/* Loading Screen for Mobile */
+.app.loading.mobile-app {
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 2rem !important;
+}
+
+.app.loading.mobile-app .loading-container {
+  max-width: 320px;
+  width: 100%;
+}
+
+/* iOS Safe Area Support */
+@supports (padding: max(0px)) {
+  .mobile-header {
+    padding-top: max(env(safe-area-inset-top), 0.5rem);
+  }
+  
+  .mobile-nav {
+    padding-bottom: max(calc(0.5rem + env(safe-area-inset-bottom)), 0.5rem);
+  }
+}
+
+/* Landscape Orientation */
+@media (orientation: landscape) and (max-height: 500px) {
+  .mobile-header {
+    padding: env(safe-area-inset-top, 0) 1rem 0.5rem;
+  }
+  
+  .header-main {
+    min-height: 2.5rem;
+  }
+  
+  .app-logo {
+    width: 2rem;
+    height: 2rem;
+  }
+  
+  .brand-text h1 {
+    font-size: 1.25rem;
+  }
+  
+  .mobile-nav {
+    padding: 0.25rem 0;
+    padding-bottom: calc(0.25rem + env(safe-area-inset-bottom, 0));
+  }
+  
+  .nav-btn {
+    min-height: 2.5rem;
+    padding: 0.25rem 0.25rem;
+  }
+  
+  .nav-icon {
+    font-size: 1rem;
+  }
+  
+  .nav-label {
+    font-size: 0.65rem;
+  }
+}
+
+/* Small screens (iPhone SE, etc.) */
+@media (max-width: 375px) {
+  .brand-text h1 {
+    font-size: 1.25rem;
+  }
+  
+  .app-logo {
+    width: 2rem;
+    height: 2rem;
+  }
+  
+  .nav-label {
+    font-size: 0.65rem;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 320px) {
+  .mobile-header {
+    padding: env(safe-area-inset-top, 0) 0.75rem 0.5rem;
+  }
+  
+  .brand-text h1 {
+    font-size: 1.1rem;
+  }
+}
+
+/* High DPI Support */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .app-logo {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* Dark Mode Enhancement */
+@media (prefers-color-scheme: dark) {
+  .app.mobile-app {
+    background: linear-gradient(135deg, #000000 0%, #0f0f1f 100%) !important;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .nav-btn,
+  .status-badge {
+    animation: none;
+    transition: none;
+  }
+  
+  .nav-btn:hover,
+  .nav-btn:active {
+    transform: none;
+  }
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.app-logo {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(0, 255, 136, 0.3);
+}
+
+.brand-text h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+  background: linear-gradient(45deg, #00ff88, #00ccff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 0.1em;
+}
+
+/* Main Content Area */
+.mobile-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+  min-height: 0; /* Important for flex child overflow */
+}
+
+/* Mobile Bottom Navigation */
+.mobile-nav {
+  display: flex;
+  background: rgba(10, 10, 25, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(0, 255, 136, 0.1);
+  padding: 0.5rem 0;
+  padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0));
+  flex-shrink: 0;
+  z-index: 1000;
+}
+
+.nav-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 0.25rem;
+  background: none;
+  border: none;
+  color: rgba(224, 224, 224, 0.6);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.75rem;
+  min-height: 3rem;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.nav-btn:hover,
+.nav-btn.active {
+  color: #00ff88;
+  background: rgba(0, 255, 136, 0.05);
+  border-radius: 0.5rem;
+}
+
+.nav-btn:active {
+  transform: scale(0.95);
+}
+
+.nav-icon {
+  font-size: 1.25rem;
+  margin-bottom: 0.125rem;
+  line-height: 1;
+}
+
+.nav-label {
+  font-weight: 500;
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+/* Mobile Status Indicator */
+.mobile-status {
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 0) + 0.5rem);
+  right: 1rem;
+  z-index: 1001;
+}
+
+.status-badge {
+  background: rgba(0, 255, 136, 0.1);
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  border-radius: 1rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #00ff88;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.status-badge.secure {
+  animation: pulse-secure 2s infinite;
+}
+
+@keyframes pulse-secure {
+  0%, 100% {
+    border-color: rgba(0, 255, 136, 0.3);
+    box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.4);
+  }
+  50% {
+    border-color: rgba(0, 255, 136, 0.6);
+    box-shadow: 0 0 0 4px rgba(0, 255, 136, 0.1);
+  }
+}
+
+/* Loading Screen for Mobile */
+.app.loading.mobile-app {
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.loading-container {
+  text-align: center;
+  padding: 2rem;
+  background: rgba(26, 26, 58, 0.8);
+  border-radius: 1rem;
+  border: 1px solid rgba(0, 255, 136, 0.2);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  max-width: 320px;
+  width: 100%;
+}
+
+.loading-logo {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+  border: 2px solid rgba(0, 255, 136, 0.3);
+}
+
+.loading-container h2 {
+  color: #00ff88;
+  margin-bottom: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.loading-container p {
+  color: rgba(224, 224, 224, 0.8);
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.loader {
+  width: 3rem;
+  height: 3rem;
+  border: 3px solid rgba(0, 255, 136, 0.2);
+  border-top: 3px solid #00ff88;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* iOS Safe Area Support */
+@supports (padding: max(0px)) {
+  .mobile-header {
+    padding-top: max(env(safe-area-inset-top), 0.5rem);
+  }
+  
+  .mobile-nav {
+    padding-bottom: max(calc(0.5rem + env(safe-area-inset-bottom)), 0.5rem);
+  }
+}
+
+/* High DPI Support */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .app-logo,
+  .loading-logo {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* Landscape Orientation */
+@media (orientation: landscape) and (max-height: 500px) {
+  .mobile-header {
+    padding: env(safe-area-inset-top, 0) 1rem 0.5rem;
+  }
+  
+  .header-main {
+    min-height: 2.5rem;
+  }
+  
+  .app-logo {
+    width: 2rem;
+    height: 2rem;
+  }
+  
+  .brand-text h1 {
+    font-size: 1.25rem;
+  }
+  
+  .mobile-nav {
+    padding: 0.25rem 0;
+    padding-bottom: calc(0.25rem + env(safe-area-inset-bottom, 0));
+  }
+  
+  .nav-btn {
+    min-height: 2.5rem;
+    padding: 0.25rem 0.25rem;
+  }
+  
+  .nav-icon {
+    font-size: 1rem;
+  }
+  
+  .nav-label {
+    font-size: 0.65rem;
+  }
+}
+
+/* Dark Mode Enhancement */
+@media (prefers-color-scheme: dark) {
+  .app.mobile-app {
+    background: linear-gradient(135deg, #000000 0%, #0f0f1f 100%);
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .nav-btn,
+  .status-badge,
+  .loader {
+    animation: none;
+    transition: none;
+  }
+  
+  .nav-btn:active {
+    transform: none;
+  }
+}
+
+/* Small screens (iPhone SE, etc.) */
+@media (max-width: 375px) {
+  .brand-text h1 {
+    font-size: 1.25rem;
+  }
+  
+  .app-logo {
+    width: 2rem;
+    height: 2rem;
+  }
+  
+  .nav-label {
+    font-size: 0.65rem;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 320px) {
+  .mobile-header {
+    padding: env(safe-area-inset-top, 0) 0.75rem 0.5rem;
+  }
+  
+  .brand-text h1 {
+    font-size: 1.1rem;
+  }
+  
+  .loading-container {
+    padding: 1.5rem;
+  }
+}
