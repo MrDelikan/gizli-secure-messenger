@@ -231,10 +231,6 @@ function App() {
             <div className="brand-text">
               <h1>Gizli</h1>
               <p className="tagline">Secure End-to-End Encrypted Chat</p>
-              {/* Debug indicator */}
-              <small className="debug-info">
-                Layout: {isMobileApp ? 'Mobile' : 'Desktop'} | Screen: {window.innerWidth}px
-              </small>
             </div>
           </div>
           
@@ -276,10 +272,94 @@ function App() {
         </div>
       </header>
 
-      {/* Tab Content */}
-      <main className={`page-container ${isMobileApp ? 'mobile-main' : 'desktop-main'}`}>
-        {renderTabContent()}
-      </main>
+      {/* Desktop Layout - Sectioned View */}
+      {!isMobileApp ? (
+        <div className="desktop-sections-container">
+          {/* Chat Section */}
+          <section className={`app-section chat-section ${activeTab === 'chat' ? 'active' : ''}`}>
+            <div className="section-header">
+              <h2>💬 Secure Chat</h2>
+              <p>End-to-end encrypted messaging</p>
+            </div>
+            <div className="section-content">
+              <ChatInterface
+                messages={messages.filter(m => 
+                  currentPeer && (m.sender === currentPeer || m.isOwn)
+                )}
+                currentPeer={currentPeer}
+                onSendMessage={handleSendMessage}
+                onConnectToPeer={handleConnectToPeer}
+                onGenerateNewKeys={handleGenerateNewKeys}
+                publicKey={publicKey}
+              />
+            </div>
+          </section>
+
+          {/* Peers Section */}
+          <section className={`app-section peers-section ${activeTab === 'peers' ? 'active' : ''}`}>
+            <div className="section-header">
+              <h2>👥 Peer Network</h2>
+              <p>Manage your secure connections</p>
+            </div>
+            <div className="section-content">
+              <PeerList
+                connectedPeers={Array.from(network.getConnectedPeers ? network.getConnectedPeers() : [])}
+                currentPeer={currentPeer}
+                onSelectPeer={setCurrentPeer}
+                onConnectToPeer={handleConnectToPeer}
+                onDisconnectPeer={(peer) => {
+                  console.log('Disconnect peer:', peer);
+                }}
+              />
+            </div>
+          </section>
+
+          {/* Developer Section */}
+          <section className={`app-section dev-section ${activeTab === 'dev' ? 'active' : ''}`}>
+            <div className="section-header">
+              <h2>⚡ Developer Console</h2>
+              <p>Network diagnostics and cryptographic tools</p>
+            </div>
+            <div className="section-content">
+              <DeveloperConsole 
+                isOpen={true}
+                onClose={() => setActiveTab('chat')} 
+                network={network}
+              />
+            </div>
+          </section>
+
+          {/* Entertainment Section */}
+          <section className={`app-section fun-section ${activeTab === 'fun' ? 'active' : ''}`}>
+            <div className="section-header">
+              <h2>🎮 Entertainment Hub</h2>
+              <p>Games and interactive features</p>
+            </div>
+            <div className="section-content">
+              <EntertainmentHub 
+                isOpen={true}
+                onClose={() => setActiveTab('chat')} 
+              />
+            </div>
+          </section>
+
+          {/* Info Section */}
+          <section className={`app-section info-section ${activeTab === 'info' ? 'active' : ''}`}>
+            <div className="section-header">
+              <h2>ℹ️ Information</h2>
+              <p>About Gizli and security features</p>
+            </div>
+            <div className="section-content">
+              <InfoPage onClose={() => setActiveTab('chat')} />
+            </div>
+          </section>
+        </div>
+      ) : (
+        /* Mobile Layout - Single Tab Content */
+        <main className="mobile-main">
+          {renderTabContent()}
+        </main>
+      )}
 
       {/* Mobile Bottom Navigation */}
       {isMobileApp && (
