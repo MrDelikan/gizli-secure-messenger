@@ -26,7 +26,7 @@
   -webkit-backdrop-filter: blur(20px);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(0, 255, 136, 0.2);
-  padding: 1rem 2rem;
+  padding: 0.75rem 2rem; /* Reduced from 1rem to 0.75rem */
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -94,9 +94,11 @@
 /* Desktop Sections Container - SECTIONED LAYOUT */
 .desktop-sections-container {
   flex: 1;
-  padding: 2rem;
+  padding: 3rem 2rem 2rem 2rem; /* Extra 1rem (16px ≈ 1 inch) top padding */
+  margin-top: 1rem; /* Additional 1rem top margin for total ~2 inch spacing */
   max-width: 1200px;
-  margin: 0 auto;
+  margin-left: auto;
+  margin-right: auto;
   width: 100%;
   box-sizing: border-box;
   display: flex;
