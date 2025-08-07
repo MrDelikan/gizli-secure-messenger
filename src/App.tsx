@@ -223,52 +223,15 @@ function App() {
 
   return (
     <div className={`app ${isMobileApp ? 'mobile-app' : 'desktop-app'}`}>
-      {/* Header - Mobile and Desktop */}
+      {/* Minimal Header - Only Logo and Brand */}
       <header className={`app-header ${isMobileApp ? 'mobile-header' : 'desktop-header'}`}>
         <div className="header-main">
           <div className="logo-container">
             <img src={gizliLogo} alt="Gizli Logo" className="app-logo" />
             <div className="brand-text">
               <h1>Gizli</h1>
-              <p className="tagline">Secure End-to-End Encrypted Chat</p>
             </div>
           </div>
-          
-          {/* Desktop Navigation - Show by default unless mobile */}
-          {!isMobileApp && (
-            <nav className="desktop-nav">
-              <button 
-                className={`desktop-nav-btn ${activeTab === 'chat' ? 'active' : ''}`}
-                onClick={() => setActiveTab('chat')}
-              >
-                💬 Chat
-              </button>
-              <button 
-                className={`desktop-nav-btn ${activeTab === 'peers' ? 'active' : ''}`}
-                onClick={() => setActiveTab('peers')}
-              >
-                👥 Peers
-              </button>
-              <button 
-                className={`desktop-nav-btn ${activeTab === 'dev' ? 'active' : ''}`}
-                onClick={() => setActiveTab('dev')}
-              >
-                ⚡ Developer
-              </button>
-              <button 
-                className={`desktop-nav-btn ${activeTab === 'fun' ? 'active' : ''}`}
-                onClick={() => setActiveTab('fun')}
-              >
-                🎮 Entertainment
-              </button>
-              <button 
-                className={`desktop-nav-btn ${activeTab === 'info' ? 'active' : ''}`}
-                onClick={() => setActiveTab('info')}
-              >
-                ℹ️ Info
-              </button>
-            </nav>
-          )}
         </div>
       </header>
 
@@ -406,6 +369,40 @@ function App() {
           </button>
         </nav>
       )}
+
+      {/* Bottom Navigation - Both Mobile and Desktop */}
+      <nav className="bottom-nav">
+        <button 
+          className={`bottom-nav-btn ${activeTab === 'chat' ? 'active' : ''}`}
+          onClick={() => setActiveTab('chat')}
+        >
+          💬 Chat
+        </button>
+        <button 
+          className={`bottom-nav-btn ${activeTab === 'peers' ? 'active' : ''}`}
+          onClick={() => setActiveTab('peers')}
+        >
+          👥 Peers
+        </button>
+        <button 
+          className={`bottom-nav-btn ${activeTab === 'dev' ? 'active' : ''}`}
+          onClick={() => setActiveTab('dev')}
+        >
+          ⚡ Developer
+        </button>
+        <button 
+          className={`bottom-nav-btn ${activeTab === 'fun' ? 'active' : ''}`}
+          onClick={() => setActiveTab('fun')}
+        >
+          🎮 Entertainment
+        </button>
+        <button 
+          className={`bottom-nav-btn ${activeTab === 'info' ? 'active' : ''}`}
+          onClick={() => setActiveTab('info')}
+        >
+          ℹ️ Info
+        </button>
+      </nav>
     </div>
   );
 }
