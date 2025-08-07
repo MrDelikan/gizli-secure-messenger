@@ -940,6 +940,80 @@
   }
 }
 
+/* Bottom Navigation - Clean Row Layout */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(15, 15, 35, 0.95) 100%);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border-top: 2px solid rgba(0, 255, 136, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  z-index: 1000;
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.bottom-nav-btn {
+  background: rgba(26, 26, 58, 0.5);
+  border: 1px solid rgba(0, 255, 136, 0.2);
+  color: #ffffff;
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  margin: 0 0.5rem;
+  min-width: 120px;
+  text-align: center;
+}
+
+.bottom-nav-btn:hover {
+  background: rgba(0, 255, 136, 0.1);
+  border-color: rgba(0, 255, 136, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 255, 136, 0.2);
+}
+
+.bottom-nav-btn.active {
+  background: linear-gradient(45deg, rgba(0, 255, 136, 0.2), rgba(0, 204, 255, 0.2));
+  border-color: #00ff88;
+  color: #00ff88;
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Mobile responsive bottom navigation */
+@media (max-width: 768px) {
+  .bottom-nav {
+    padding: 0.5rem;
+  }
+  
+  .bottom-nav-btn {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+    margin: 0 0.25rem;
+    min-width: auto;
+    flex: 1;
+  }
+}
+
+/* Ensure content doesn't get hidden behind bottom nav */
+.mobile-app .mobile-main {
+  padding-bottom: 80px;
+}
+
+.desktop-app .desktop-sections-container {
+  padding-bottom: 80px;
+}
+
 /* Security theme colors - Enhanced Futuristic */
 :root {
   --primary-green: #00ff88;

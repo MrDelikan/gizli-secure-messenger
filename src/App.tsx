@@ -324,52 +324,6 @@ function App() {
         </main>
       )}
 
-      {/* Mobile Bottom Navigation */}
-      {isMobileApp && (
-        <nav className="nav-tabs">
-          <button 
-            className={`nav-tab ${activeTab === 'chat' ? 'active' : ''}`}
-            onClick={() => setActiveTab('chat')}
-            aria-label="Chat"
-          >
-            <span className="nav-icon">💬</span>
-            <span className="nav-label">Chat</span>
-          </button>
-          <button 
-            className={`nav-tab ${activeTab === 'peers' ? 'active' : ''}`}
-            onClick={() => setActiveTab('peers')}
-            aria-label="Peers"
-          >
-            <span className="nav-icon">👥</span>
-            <span className="nav-label">Peers</span>
-          </button>
-          <button 
-            className={`nav-tab ${activeTab === 'dev' ? 'active' : ''}`}
-            onClick={() => setActiveTab('dev')}
-            aria-label="Developer Console"
-          >
-            <span className="nav-icon">⚡</span>
-            <span className="nav-label">Dev</span>
-          </button>
-          <button 
-            className={`nav-tab ${activeTab === 'fun' ? 'active' : ''}`}
-            onClick={() => setActiveTab('fun')}
-            aria-label="Entertainment Hub"
-          >
-            <span className="nav-icon">🎮</span>
-            <span className="nav-label">Fun</span>
-          </button>
-          <button 
-            className={`nav-tab ${activeTab === 'info' ? 'active' : ''}`}
-            onClick={() => setActiveTab('info')}
-            aria-label="Info"
-          >
-            <span className="nav-icon">ℹ️</span>
-            <span className="nav-label">Info</span>
-          </button>
-        </nav>
-      )}
-
       {/* Bottom Navigation - Both Mobile and Desktop */}
       <nav className="bottom-nav">
         <button 
