@@ -191,19 +191,21 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
         console.log(`✅ Public key copied to clipboard: ${shortKey}`);
       } catch (error) {
         console.error('Failed to copy:', error);
-        // Fallback alert if clipboard fails
-        const message = `Your Public Key:\n\n${publicKey}\n\n⚠️ Could not copy automatically - please copy manually.`;
-        alert(message);
+        // Show error in status instead of popup
+        setStatusMessage('❌ Failed to copy key - try manual copy');
+        setConnectionStatus('error');
       }
     } else {
-      alert('No public key available. Please wait for key generation to complete.');
+      setStatusMessage('⚠️ No public key available yet');
+      setConnectionStatus('error');
     }
   };
 
   const handleGenerateKeys = async () => {
     if (!onGenerateNewKeys) {
       setLastError('Key generation not available');
-      alert('Key generation function not available');
+      setStatusMessage('❌ Key generation not available');
+      setConnectionStatus('error');
       return;
     }
 
@@ -226,7 +228,6 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
         } catch (clipboardError) {
           console.error('Failed to copy to clipboard:', clipboardError);
           setStatusMessage('🔑 New keys generated (copy manually)');
-          alert(`🔑 New keys generated successfully!\n\nYour new public key:\n${newPublicKey}\n\n⚠️ Could not copy to clipboard automatically.\nPlease copy the key manually from the debug info below.`);
         }
         setConnectionStatus('ready');
       } else {
@@ -242,7 +243,6 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
       setConnectionStatus('error');
       setStatusMessage('Key generation failed');
       setIsGeneratingKeys(false);
-      alert(`❌ Key generation failed: ${errorMessage}`);
     }
   };
 

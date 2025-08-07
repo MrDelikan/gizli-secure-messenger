@@ -61,10 +61,13 @@ function App() {
         setPublicKey(newPublicKey);
         setIsInitialized(true);
 
-        // Show welcome message with public key
-        setTimeout(() => {
-          alert(`🔒 Gizli Secure Messenger Initialized!\n\nYour Public Key:\n${newPublicKey}\n\nShare this key with others to establish secure connections.\n\nTip: Use the "📋 Share Public Key" button to copy it again.`);
-        }, 1000);
+        // Auto-copy public key to clipboard without popup
+        try {
+          await navigator.clipboard.writeText(newPublicKey);
+          console.log('🔒 Gizli initialized - Public key copied to clipboard');
+        } catch {
+          console.log('🔒 Gizli initialized - Key generation complete');
+        }
 
         // Register message handler
         network.onMessage('main', (message: string, fromPeer: string) => {
@@ -141,7 +144,6 @@ function App() {
         return newPublicKey;
       } catch (error) {
         console.error('Failed to generate new keys:', error);
-        alert('Failed to generate new keys');
         return null;
       }
     }
