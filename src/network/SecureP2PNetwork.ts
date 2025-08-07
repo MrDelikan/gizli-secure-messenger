@@ -34,18 +34,34 @@ export interface MetadataPayload {
 
 export class SecureP2PNetwork {
   private crypto: SecureCrypto;
-  private socket: Socket;
+  private socket: Socket | null = null;
   private identityKeyPair: KeyPair;
   private peers = new Map<string, PeerConnection>();
   private messageHandlers = new Map<string, (message: string, fromPeer: string) => void>();
   private networkAnalytics: NetworkAnalytics;
   private isInitialized = false;
+  private connectionMode: 'direct' | 'signaling' = 'direct';
 
-  constructor(signalingServerUrl: string = 'http://localhost:3001') {
+  constructor(signalingServerUrl?: string) {
     this.crypto = SecureCrypto.getInstance();
-    this.socket = io(signalingServerUrl, {
-      transports: ['websocket', 'polling']
-    });
+    
+    // Try to connect to signaling server, fallback to direct mode
+    if (signalingServerUrl) {
+      try {
+        this.socket = io(signalingServerUrl, {
+          transports: ['websocket', 'polling'],
+          timeout: 5000,
+          autoConnect: false
+        });
+        this.connectionMode = 'signaling';
+      } catch (error) {
+        console.warn('Signaling server not available, using direct mode:', error);
+        this.connectionMode = 'direct';
+      }
+    } else {
+      this.connectionMode = 'direct';
+    }
+    
     this.identityKeyPair = this.crypto.generateIdentityKeyPair();
     this.networkAnalytics = new NetworkAnalytics();
     this.setupSignaling();
@@ -54,18 +70,54 @@ export class SecureP2PNetwork {
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
 
-    // Register with signaling server
-    this.socket.emit('register-peer', {
-      publicKey: this.getPublicKeyHex()
-    });
+    if (this.connectionMode === 'signaling' && this.socket) {
+      // Traditional signaling server mode
+      this.setupSignaling();
+      
+      // Try to connect to signaling server
+      try {
+        await new Promise<void>((resolve, reject) => {
+          const timeout = setTimeout(() => {
+            reject(new Error('Signaling server connection timeout'));
+          }, 5000);
+          
+          this.socket!.connect();
+          this.socket!.once('connect', () => {
+            clearTimeout(timeout);
+            console.log('Connected to signaling server');
+            resolve();
+          });
+          
+          this.socket!.once('connect_error', (error) => {
+            clearTimeout(timeout);
+            console.warn('Signaling server connection failed, switching to direct mode:', error);
+            this.connectionMode = 'direct';
+            resolve();
+          });
+        });
+        
+        if (this.connectionMode === 'signaling') {
+          // Register with signaling server
+          this.socket!.emit('register-peer', {
+            publicKey: this.getPublicKeyHex()
+          });
+        }
+      } catch (error) {
+        console.warn('Signaling server not available, using direct mode:', error);
+        this.connectionMode = 'direct';
+      }
+    }
 
-    // Start dummy traffic generation for metadata protection
+    // Always start dummy traffic for metadata protection
     this.startDummyTrafficGeneration();
-
     this.isInitialized = true;
+    
+    console.log(`P2P Network initialized in ${this.connectionMode} mode`);
   }
 
   private setupSignaling(): void {
+    if (!this.socket) return;
+    
     this.socket.on('connect', () => {
       console.log('Connected to signaling server');
     });
@@ -92,17 +144,26 @@ export class SecureP2PNetwork {
       throw new Error('Already connected to this peer');
     }
 
+    console.log(`Attempting to connect to peer in ${this.connectionMode} mode`);
+
     // Generate ephemeral key pair for this connection
     const ephemeralKeyPair = this.crypto.generateKeyPair();
     
-    // Create WebRTC peer (initiator)
+    // Create WebRTC peer (initiator) with better ICE servers
     const peer = new SimplePeer({
       initiator: true,
       trickle: true,
       config: {
         iceServers: [
           { urls: 'stun:stun.l.google.com:19302' },
-          // In production, use private STUN/TURN servers
+          { urls: 'stun:stun1.l.google.com:19302' },
+          { urls: 'stun:stun2.l.google.com:19302' },
+          { urls: 'stun:stun3.l.google.com:19302' },
+          { urls: 'stun:stun4.l.google.com:19302' },
+          // Add more reliable public STUN servers
+          { urls: 'stun:stun.stunprotocol.org:3478' },
+          { urls: 'stun:stun.voiparound.com' },
+          { urls: 'stun:stun.voipbuster.com' }
         ]
       }
     });
@@ -126,17 +187,56 @@ export class SecureP2PNetwork {
     this.peers.set(peerPublicKey, peerConnection);
     this.setupPeerHandlers(peerConnection);
 
-    peer.on('signal', (signal: SimplePeer.SignalData) => {
-      // Send WebRTC signaling through server
-      this.socket.emit('webrtc-signal', {
-        targetPublicKey: peerPublicKey,
-        signal,
-        encryptedMetadata: this.encryptMetadata({
-          ephemeralPublicKey: ephemeralKeyPair.publicKey,
-          timestamp: Date.now()
-        })
+    if (this.connectionMode === 'direct') {
+      // For direct mode, we need manual signaling
+      return new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => {
+          reject(new Error('Direct connection timeout - manual signaling required'));
+        }, 30000);
+
+        peer.on('signal', (data) => {
+          console.log('WebRTC signal data generated:', data);
+          
+          // In direct mode, show the signal data to user for manual exchange
+          const signalData = JSON.stringify(data);
+          const message = `Connection Signal Generated!\n\nSend this signal to your peer:\n\n${signalData}\n\nOnce you receive their signal, paste it into the input field.`;
+          
+          // For now, we'll use a simplified direct connection
+          // In a full implementation, this would involve clipboard/manual exchange
+          alert(message);
+          
+          clearTimeout(timeout);
+          resolve();
+        });
+
+        peer.on('connect', () => {
+          console.log('Direct P2P connection established');
+          peerConnection.isConnected = true;
+          // this.networkAnalytics.logConnectionEvent(peerPublicKey, 'connected');
+        });
+
+        peer.on('error', (err) => {
+          console.error('Direct connection error:', err);
+          clearTimeout(timeout);
+          reject(err);
+        });
       });
-    });
+    } else if (this.connectionMode === 'signaling' && this.socket) {
+      // Traditional signaling server method
+      peer.on('signal', (signal: SimplePeer.SignalData) => {
+        // Send WebRTC signaling through server
+        this.socket!.emit('webrtc-signal', {
+          targetPublicKey: peerPublicKey,
+          signal,
+          encryptedMetadata: this.encryptMetadata({
+            ephemeralPublicKey: ephemeralKeyPair.publicKey,
+            timestamp: Date.now()
+          })
+        });
+      });
+    } else {
+      throw new Error('No connection method available. Please check network configuration.');
+    }
   }
 
   private async handleWebRTCSignal(data: {
@@ -393,7 +493,10 @@ export class SecureP2PNetwork {
     }
     this.peers.clear();
     this.messageHandlers.clear();
-    this.socket.disconnect();
+    
+    if (this.socket) {
+      this.socket.disconnect();
+    }
     
     // Emergency clear all crypto material
     this.crypto.emergencyPanic();

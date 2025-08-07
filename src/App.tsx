@@ -18,7 +18,7 @@ interface Message {
 }
 
 function App() {
-  const [network] = useState(() => new SecureP2PNetwork());
+  const [network] = useState(() => new SecureP2PNetwork()); // No signaling server - use direct mode
   const [messages, setMessages] = useState<Message[]>([]);
   const [currentPeer, setCurrentPeer] = useState<string | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
