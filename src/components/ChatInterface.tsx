@@ -14,6 +14,7 @@ interface ChatInterfaceProps {
   currentPeer: string | null;
   onSendMessage: (message: string) => void;
   onConnectToPeer?: (peerKey: string) => void;
+  onGenerateNewKeys?: () => void;
   publicKey?: string;
 }
 
@@ -22,10 +23,13 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
   currentPeer,
   onSendMessage,
   onConnectToPeer,
+  onGenerateNewKeys,
   publicKey
 }) => {
   const [messageText, setMessageText] = useState('');
   const [peerKeyInput, setPeerKeyInput] = useState('');
+  const [isConnecting, setIsConnecting] = useState(false);
+  const [lastError, setLastError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -36,11 +40,36 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
     scrollToBottom();
   }, [messages]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (messageText.trim() && currentPeer) {
-      onSendMessage(messageText.trim());
+    
+    if (!messageText.trim()) {
+      return;
+    }
+
+    if (!currentPeer) {
+      setLastError('No peer connected');
+      alert('No peer connected. Please connect to a peer first.');
+      return;
+    }
+
+    try {
+      console.log('Sending message:', messageText.substring(0, 20) + '...');
+      await onSendMessage(messageText.trim());
       setMessageText('');
+      setLastError(null);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to send message';
+      console.error('Send message failed:', error);
+      setLastError(errorMessage);
+      
+      if (errorMessage.includes('not connected') || errorMessage.includes('disconnected')) {
+        alert('Connection lost. Please reconnect to the peer.');
+      } else if (errorMessage.includes('encryption')) {
+        alert('Encryption error. Please try reconnecting.');
+      } else {
+        alert(`Failed to send message: ${errorMessage}`);
+      }
     }
   };
 
@@ -52,28 +81,89 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
     return `${key.slice(0, 8)}...${key.slice(-8)}`;
   };
 
-  const handleConnect = () => {
-    if (peerKeyInput.trim() && onConnectToPeer) {
-      onConnectToPeer(peerKeyInput.trim());
+  const handleConnect = async () => {
+    if (!peerKeyInput.trim()) {
+      setLastError('Please enter a peer public key');
+      alert('Please enter a peer public key');
+      return;
+    }
+
+    if (!onConnectToPeer) {
+      setLastError('Connection function not available');
+      alert('Connection function not available');
+      return;
+    }
+
+    // Validate key format (basic check)
+    const key = peerKeyInput.trim();
+    if (key.length < 32) {
+      setLastError('Invalid key format - key too short');
+      alert('Invalid key format. Please check the public key and try again.');
+      return;
+    }
+
+    setIsConnecting(true);
+    setLastError(null);
+
+    try {
+      console.log('Attempting to connect to peer:', key.substring(0, 8) + '...');
+      await onConnectToPeer(key);
       setPeerKeyInput('');
+      console.log('Connection successful');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown connection error';
+      console.error('Connection failed:', error);
+      setLastError(errorMessage);
+      
+      // Show user-friendly error messages
+      if (errorMessage.includes('timeout')) {
+        alert('Connection timeout. The peer might be offline or unreachable.');
+      } else if (errorMessage.includes('refused') || errorMessage.includes('rejected')) {
+        alert('Connection refused. Please check the peer key and try again.');
+      } else if (errorMessage.includes('network')) {
+        alert('Network error. Please check your internet connection.');
+      } else {
+        alert(`Connection failed: ${errorMessage}\n\nPlease check:\n• The peer key is correct\n• The peer is online\n• Your internet connection`);
+      }
+    } finally {
+      setIsConnecting(false);
     }
   };
 
   const handleShareKey = async () => {
     if (publicKey) {
+      const message = `Your Public Key:\n\n${publicKey}\n\nShare this key with others to establish secure connections.\n\nCopy this key and send it via any secure channel.`;
+      
       try {
         await navigator.clipboard.writeText(publicKey);
-        alert('Public key copied to clipboard!');
+        alert(message + '\n\n✅ Key copied to clipboard!');
       } catch (error) {
         console.error('Failed to copy:', error);
-        alert(`Your public key: ${publicKey}`);
+        alert(message);
       }
+    } else {
+      alert('No public key available. Please wait for key generation to complete.');
     }
   };
 
-  const handleGenerateKeys = () => {
-    alert('New key generation will restart the application. Continue?');
-    // This would trigger key regeneration in the parent component
+  const handleGenerateKeys = async () => {
+    if (!onGenerateNewKeys) {
+      setLastError('Key generation not available');
+      alert('Key generation function not available');
+      return;
+    }
+
+    try {
+      console.log('Generating new keys...');
+      setLastError(null);
+      await onGenerateNewKeys();
+      console.log('Keys generated successfully');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Key generation failed';
+      console.error('Key generation failed:', error);
+      setLastError(errorMessage);
+      alert(`Key generation failed: ${errorMessage}`);
+    }
   };
 
   if (!currentPeer) {
@@ -87,17 +177,30 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
           <div className="login-form">
             <div className="input-group">
               <label htmlFor="peer-id">Connect to Peer:</label>
+              {lastError && (
+                <div className="error-message">
+                  ⚠️ {lastError}
+                </div>
+              )}
               <input 
                 type="text" 
                 id="peer-id"
                 value={peerKeyInput}
-                onChange={(e) => setPeerKeyInput(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleConnect()}
+                onChange={(e) => {
+                  setPeerKeyInput(e.target.value);
+                  if (lastError) setLastError(null); // Clear error when user types
+                }}
+                onKeyPress={(e) => e.key === 'Enter' && !isConnecting && handleConnect()}
                 placeholder="Enter peer's public key..."
                 className="peer-input"
+                disabled={isConnecting}
               />
-              <button className="connect-btn" onClick={handleConnect}>
-                🌐 Connect
+              <button 
+                className={`connect-btn ${isConnecting ? 'connecting' : ''}`}
+                onClick={handleConnect}
+                disabled={isConnecting || !peerKeyInput.trim()}
+              >
+                {isConnecting ? '🔄 Connecting...' : '🌐 Connect'}
               </button>
             </div>
             
@@ -113,6 +216,14 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
                 📋 Share Public Key
               </button>
             </div>
+            
+            {/* Connection Status Debug Info */}
+            {publicKey && (
+              <div className="debug-info">
+                <div>🔑 Your Key: {publicKey.substring(0, 16)}...</div>
+                <div>📡 Status: Ready to connect</div>
+              </div>
+            )}
           </div>
         </div>
       </div>

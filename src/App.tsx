@@ -55,8 +55,14 @@ function App() {
     const initializeNetwork = async () => {
       try {
         await network.initialize();
-        setPublicKey(network.getPublicKeyHex());
+        const newPublicKey = network.getPublicKeyHex();
+        setPublicKey(newPublicKey);
         setIsInitialized(true);
+
+        // Show welcome message with public key
+        setTimeout(() => {
+          alert(`🔒 Gizli Secure Messenger Initialized!\n\nYour Public Key:\n${newPublicKey}\n\nShare this key with others to establish secure connections.\n\nTip: Use the "📋 Share Public Key" button to copy it again.`);
+        }, 1000);
 
         // Register message handler
         network.onMessage('main', (message: string, fromPeer: string) => {
@@ -117,6 +123,28 @@ function App() {
     }
   };
 
+  const handleGenerateNewKeys = async () => {
+    if (confirm('Generating new keys will disconnect all current connections and create a new identity. Continue?')) {
+      try {
+        setIsInitialized(false);
+        setMessages([]);
+        setCurrentPeer(null);
+        
+        // Reinitialize network with new keys
+        await network.initialize();
+        const newPublicKey = network.getPublicKeyHex();
+        setPublicKey(newPublicKey);
+        setIsInitialized(true);
+        
+        // Show the new public key to the user
+        alert(`New key pair generated!\n\nYour new Public Key:\n${newPublicKey}\n\nShare this key with others to establish secure connections.`);
+      } catch (error) {
+        console.error('Failed to generate new keys:', error);
+        alert('Failed to generate new keys');
+      }
+    }
+  };
+
   const renderTabContent = () => {
     switch (activeTab) {
       case 'chat':
@@ -128,6 +156,7 @@ function App() {
             currentPeer={currentPeer}
             onSendMessage={handleSendMessage}
             onConnectToPeer={handleConnectToPeer}
+            onGenerateNewKeys={handleGenerateNewKeys}
             publicKey={publicKey}
           />
         );

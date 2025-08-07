@@ -93,6 +93,53 @@
   gap: 0.5rem;
 }
 
+.error-message {
+  color: #ff4757;
+  font-size: 0.8rem;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  background: rgba(255, 71, 87, 0.1);
+  border: 1px solid rgba(255, 71, 87, 0.3);
+  border-radius: 4px;
+  animation: errorFadeIn 0.3s ease-out;
+}
+
+@keyframes errorFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.connect-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.connect-btn.connecting {
+  background: linear-gradient(135deg, #ffa726, #ff9800);
+}
+
+.debug-info {
+  margin-top: 1rem;
+  padding: 0.5rem;
+  background: rgba(0, 255, 136, 0.1);
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-family: monospace;
+  color: #00ff88;
+}
+
+.debug-info div {
+  margin: 0.2rem 0;
+}
+
 .input-group label {
   color: #00ff88;
   font-weight: 600;
