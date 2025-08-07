@@ -1,0 +1,45 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#16213e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0f0f23;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="iconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00ff88;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00cc6a;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="512" height="512" rx="80" fill="url(#bgGrad)"/>
+  
+  <!-- Lock Icon -->
+  <g transform="translate(256,256)">
+    <!-- Lock Body -->
+    <rect x="-60" y="-20" width="120" height="100" rx="15" fill="url(#iconGrad)"/>
+    
+    <!-- Lock Shackle -->
+    <path d="M -40 -20 Q -40 -80 0 -80 Q 40 -80 40 -20" 
+          stroke="url(#iconGrad)" 
+          stroke-width="12" 
+          fill="none" 
+          stroke-linecap="round"/>
+    
+    <!-- Key Hole -->
+    <circle cx="0" cy="15" r="12" fill="#1a1a2e"/>
+    <rect x="-4" y="15" width="8" height="20" fill="#1a1a2e"/>
+    
+    <!-- Security Elements -->
+    <circle cx="-80" cy="-80" r="8" fill="#00ff88" opacity="0.8"/>
+    <circle cx="80" cy="-80" r="8" fill="#00ff88" opacity="0.8"/>
+    <circle cx="-80" cy="80" r="8" fill="#00ff88" opacity="0.8"/>
+    <circle cx="80" cy="80" r="8" fill="#00ff88" opacity="0.8"/>
+  </g>
+  
+  <!-- Corner Accents -->
+  <path d="M 80 40 L 40 40 L 40 80" stroke="#00ff88" stroke-width="4" fill="none" opacity="0.6"/>
+  <path d="M 432 40 L 472 40 L 472 80" stroke="#00ff88" stroke-width="4" fill="none" opacity="0.6"/>
+  <path d="M 80 472 L 40 472 L 40 432" stroke="#00ff88" stroke-width="4" fill="none" opacity="0.6"/>
+  <path d="M 432 472 L 472 472 L 472 432" stroke="#00ff88" stroke-width="4" fill="none" opacity="0.6"/>
+</svg>
