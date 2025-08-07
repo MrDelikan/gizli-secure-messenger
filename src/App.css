@@ -140,11 +140,12 @@
   opacity: 1;
   transform: scale(1);
   pointer-events: all;
-  border-color: rgba(0, 255, 136, 0.5);
-  box-shadow: 0 8px 32px rgba(0, 255, 136, 0.1);
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
-.app-section:hover {
+.desktop-app .app-section:hover {
   border-color: rgba(0, 255, 136, 0.4);
 }
 
@@ -185,24 +186,24 @@
   min-height: 0;
 }
 
-/* Specific Section Styling */
-.chat-section.active {
+/* Specific Section Styling - Desktop Only */
+.desktop-app .chat-section.active {
   background: linear-gradient(135deg, rgba(0, 255, 136, 0.05), rgba(26, 26, 58, 0.4));
 }
 
-.peers-section.active {
+.desktop-app .peers-section.active {
   background: linear-gradient(135deg, rgba(0, 204, 255, 0.05), rgba(26, 26, 58, 0.4));
 }
 
-.dev-section.active {
+.desktop-app .dev-section.active {
   background: linear-gradient(135deg, rgba(255, 170, 0, 0.05), rgba(26, 26, 58, 0.4));
 }
 
-.fun-section.active {
+.desktop-app .fun-section.active {
   background: linear-gradient(135deg, rgba(255, 68, 68, 0.05), rgba(26, 26, 58, 0.4));
 }
 
-.info-section.active {
+.desktop-app .info-section.active {
   background: linear-gradient(135deg, rgba(170, 170, 255, 0.05), rgba(26, 26, 58, 0.4));
 }
 
