@@ -14,7 +14,7 @@ interface ChatInterfaceProps {
   currentPeer: string | null;
   onSendMessage: (message: string) => void;
   onConnectToPeer?: (peerKey: string) => void;
-  onGenerateNewKeys?: () => void;
+  onGenerateNewKeys?: () => Promise<string | null>;
   publicKey?: string;
 }
 
@@ -33,7 +33,8 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
   const [connectionStatus, setConnectionStatus] = useState<'ready' | 'connecting' | 'connected' | 'error'>('ready');
   const [statusMessage, setStatusMessage] = useState<string>('');
   const [isGeneratingKeys, setIsGeneratingKeys] = useState(false);
-  const [previousPublicKey, setPreviousPublicKey] = useState<string | null>(null);
+  const [showCopySuccess, setShowCopySuccess] = useState(false);
+  const [copyButtonText, setCopyButtonText] = useState('📋 Share Public Key');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -55,32 +56,28 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
     }
   }, [publicKey, currentPeer]);
 
-  useEffect(() => {
-    // Auto-copy new key to clipboard after generation
-    // This triggers when publicKey changes (new key generated) or during manual generation
-    if (publicKey && (isGeneratingKeys || (previousPublicKey && previousPublicKey !== publicKey))) {
-      const copyNewKey = async () => {
-        try {
-          await navigator.clipboard.writeText(publicKey);
-          setConnectionStatus('ready');
-          setStatusMessage('New keys generated and copied to clipboard!');
-          alert(`🔑 New keys generated successfully!\n\nYour new public key has been copied to clipboard:\n\n${publicKey.substring(0, 32)}...\n\n✅ Ready to share with peers!`);
-        } catch (clipboardError) {
-          console.error('Failed to copy to clipboard:', clipboardError);
-          setConnectionStatus('ready');
-          setStatusMessage('New keys generated successfully');
-          alert(`🔑 New keys generated successfully!\n\nYour new public key:\n\n${publicKey}\n\n(Automatic clipboard copy failed - please copy manually)`);
-        } finally {
-          setIsGeneratingKeys(false);
-          setPreviousPublicKey(publicKey);
-        }
-      };
-      copyNewKey();
-    } else if (publicKey && !previousPublicKey) {
-      // Initial key load (app startup) - just track it, don't copy
-      setPreviousPublicKey(publicKey);
+  // Helper function to show copy success feedback
+  const showCopyFeedback = (isNewKey: boolean = false) => {
+    setShowCopySuccess(true);
+    if (isNewKey) {
+      setCopyButtonText('✅ New Key Copied!');
+      setStatusMessage('🔑 New keys generated and copied to clipboard!');
+    } else {
+      setCopyButtonText('✅ Copied!');
+      setStatusMessage('📋 Key copied to clipboard!');
     }
-  }, [publicKey, isGeneratingKeys, previousPublicKey]);
+    
+    // Reset after 3 seconds
+    setTimeout(() => {
+      setShowCopySuccess(false);
+      setCopyButtonText('📋 Share Public Key');
+      if (isNewKey) {
+        setStatusMessage('Ready to connect with new keys');
+      } else {
+        setStatusMessage(currentPeer ? 'Secure connection established' : 'Ready to connect');
+      }
+    }, 3000);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -186,13 +183,16 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
 
   const handleShareKey = async () => {
     if (publicKey) {
-      const message = `Your Public Key:\n\n${publicKey}\n\nShare this key with others to establish secure connections.\n\nCopy this key and send it via any secure channel.`;
-      
       try {
         await navigator.clipboard.writeText(publicKey);
-        alert(message + '\n\n✅ Key copied to clipboard!');
+        showCopyFeedback(false);
+        // Show a brief success message instead of a blocking alert
+        const shortKey = `${publicKey.substring(0, 16)}...${publicKey.substring(-8)}`;
+        console.log(`✅ Public key copied to clipboard: ${shortKey}`);
       } catch (error) {
         console.error('Failed to copy:', error);
+        // Fallback alert if clipboard fails
+        const message = `Your Public Key:\n\n${publicKey}\n\n⚠️ Could not copy automatically - please copy manually.`;
         alert(message);
       }
     } else {
@@ -214,8 +214,27 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
       setStatusMessage('Generating new keys...');
       setIsGeneratingKeys(true);
       
-      await onGenerateNewKeys();
+      const newPublicKey = await onGenerateNewKeys();
       console.log('Keys generated successfully');
+      
+      // Auto-copy the new key to clipboard if generation was successful
+      if (newPublicKey) {
+        try {
+          await navigator.clipboard.writeText(newPublicKey);
+          showCopyFeedback(true);
+          console.log(`✅ New key generated and copied: ${newPublicKey.substring(0, 16)}...`);
+        } catch (clipboardError) {
+          console.error('Failed to copy to clipboard:', clipboardError);
+          setStatusMessage('🔑 New keys generated (copy manually)');
+          alert(`🔑 New keys generated successfully!\n\nYour new public key:\n${newPublicKey}\n\n⚠️ Could not copy to clipboard automatically.\nPlease copy the key manually from the debug info below.`);
+        }
+        setConnectionStatus('ready');
+      } else {
+        setConnectionStatus('ready');
+        setStatusMessage('Key generation was cancelled or failed');
+      }
+      
+      setIsGeneratingKeys(false);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Key generation failed';
       console.error('Key generation failed:', error);
@@ -246,7 +265,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
               
               {/* Status Display */}
               {statusMessage && (
-                <div className={`status-message ${connectionStatus}`}>
+                <div className={`status-message ${connectionStatus} ${showCopySuccess ? 'copy-success' : ''}`}>
                   {connectionStatus === 'connecting' && '🔄 '}
                   {connectionStatus === 'connected' && '✅ '}
                   {connectionStatus === 'error' && '❌ '}
@@ -303,8 +322,11 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
               >
                 {isGeneratingKeys ? '🔄 Generating Keys...' : '🔑 Generate New Keys'}
               </button>
-              <button className="action-btn share-key" onClick={handleShareKey}>
-                📋 Share Public Key
+              <button 
+                className={`action-btn share-key ${showCopySuccess ? 'copy-success' : ''}`} 
+                onClick={handleShareKey}
+              >
+                {copyButtonText}
               </button>
             </div>
             

@@ -6,5 +6,6 @@ declare global {
       isNativePlatform: () => boolean;
       platform: string;
     };
+    Buffer: typeof Buffer;
   }
 }

@@ -10,14 +10,12 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
       manifest: {
-        name: 'Gizli - End-to-End Encrypted Messaging',
+        name: 'Gizli',
         short_name: 'Gizli',
-        description: 'State-of-the-art end-to-end encrypted chat application designed to resist sophisticated adversaries',
+        description: 'Secure End-to-End Encrypted Chat',
         theme_color: '#00ff88',
         background_color: '#1a1a2e',
         display: 'standalone',
-        orientation: 'portrait-primary',
-        scope: '/',
         start_url: '/',
         icons: [
           {
@@ -31,29 +29,15 @@ export default defineConfig({
             type: 'image/png'
           },
           {
-            src: 'icons/icon-512x512.png',
+            src: 'gizli-logo.jpg',
             sizes: '512x512',
-            type: 'image/png',
-            purpose: 'any maskable'
+            type: 'image/jpeg'
           }
         ]
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
-        navigateFallback: 'index.html',
-        runtimeCaching: [
-          {
-            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'google-fonts-cache',
-              expiration: {
-                maxEntries: 10,
-                maxAgeSeconds: 60 * 60 * 24 * 365 // <== 365 days
-              }
-            }
-          }
-        ]
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg}'],
+        navigateFallback: 'index.html'
       },
       devOptions: {
         enabled: true
@@ -90,9 +74,18 @@ export default defineConfig({
     }
   },
   define: {
-    global: 'globalThis'
+    global: 'globalThis',
+    'process.env': process.env
   },
   optimizeDeps: {
-    include: ['libsodium-wrappers']
+    include: ['libsodium-wrappers', 'buffer']
+  },
+  resolve: {
+    alias: {
+      events: 'events',
+      util: 'util',
+      stream: 'stream-browserify',
+      buffer: 'buffer'
+    }
   }
 })

@@ -123,7 +123,7 @@ function App() {
     }
   };
 
-  const handleGenerateNewKeys = async () => {
+  const handleGenerateNewKeys = async (): Promise<string | null> => {
     if (confirm('Generating new keys will disconnect all current connections and create a new identity. Continue?')) {
       try {
         setIsInitialized(false);
@@ -136,12 +136,14 @@ function App() {
         setPublicKey(newPublicKey);
         setIsInitialized(true);
         
-        // Note: ChatInterface will handle clipboard copy and user notification
+        return newPublicKey;
       } catch (error) {
         console.error('Failed to generate new keys:', error);
         alert('Failed to generate new keys');
+        return null;
       }
     }
+    return null;
   };
 
   const renderTabContent = () => {
@@ -218,67 +220,106 @@ function App() {
   }
 
   return (
-    <div className={`app ${isMobileApp ? 'mobile-app' : ''}`}>
-      {/* Mobile App Header */}
-      <header className="app-header mobile-header">
+    <div className={`app ${isMobileApp ? 'mobile-app' : 'desktop-app'}`}>
+      {/* Header - Mobile and Desktop */}
+      <header className={`app-header ${isMobileApp ? 'mobile-header' : 'desktop-header'}`}>
         <div className="header-main">
           <div className="logo-container">
             <img src={gizliLogo} alt="Gizli Logo" className="app-logo" />
             <div className="brand-text">
               <h1>Gizli</h1>
+              <p className="tagline">Secure End-to-End Encrypted Chat</p>
             </div>
           </div>
+          
+          {/* Desktop Navigation */}
+          {!isMobileApp && (
+            <nav className="desktop-nav">
+              <button 
+                className={`desktop-nav-btn ${activeTab === 'chat' ? 'active' : ''}`}
+                onClick={() => setActiveTab('chat')}
+              >
+                💬 Chat
+              </button>
+              <button 
+                className={`desktop-nav-btn ${activeTab === 'peers' ? 'active' : ''}`}
+                onClick={() => setActiveTab('peers')}
+              >
+                👥 Peers
+              </button>
+              <button 
+                className={`desktop-nav-btn ${activeTab === 'dev' ? 'active' : ''}`}
+                onClick={() => setActiveTab('dev')}
+              >
+                ⚡ Developer
+              </button>
+              <button 
+                className={`desktop-nav-btn ${activeTab === 'fun' ? 'active' : ''}`}
+                onClick={() => setActiveTab('fun')}
+              >
+                🎮 Entertainment
+              </button>
+              <button 
+                className={`desktop-nav-btn ${activeTab === 'info' ? 'active' : ''}`}
+                onClick={() => setActiveTab('info')}
+              >
+                ℹ️ Info
+              </button>
+            </nav>
+          )}
         </div>
       </header>
 
-      {/* Tab Content - UNIFIED DESIGN */}
-      <main className="page-container">
+      {/* Tab Content */}
+      <main className={`page-container ${isMobileApp ? 'mobile-main' : 'desktop-main'}`}>
         {renderTabContent()}
       </main>
 
-      {/* Mobile Bottom Navigation - UNIFIED DESIGN */}
-      <nav className="nav-tabs">
-        <button 
-          className={`nav-tab ${activeTab === 'chat' ? 'active' : ''}`}
-          onClick={() => setActiveTab('chat')}
-          aria-label="Chat"
-        >
-          <span className="nav-icon">💬</span>
-          <span className="nav-label">Chat</span>
-        </button>
-        <button 
-          className={`nav-tab ${activeTab === 'peers' ? 'active' : ''}`}
-          onClick={() => setActiveTab('peers')}
-          aria-label="Peers"
-        >
-          <span className="nav-icon">👥</span>
-          <span className="nav-label">Peers</span>
-        </button>
-        <button 
-          className={`nav-tab ${activeTab === 'dev' ? 'active' : ''}`}
-          onClick={() => setActiveTab('dev')}
-          aria-label="Developer Console"
-        >
-          <span className="nav-icon">⚡</span>
-          <span className="nav-label">Dev</span>
-        </button>
-        <button 
-          className={`nav-tab ${activeTab === 'fun' ? 'active' : ''}`}
-          onClick={() => setActiveTab('fun')}
-          aria-label="Entertainment Hub"
-        >
-          <span className="nav-icon">🎮</span>
-          <span className="nav-label">Fun</span>
-        </button>
-        <button 
-          className={`nav-tab ${activeTab === 'info' ? 'active' : ''}`}
-          onClick={() => setActiveTab('info')}
-          aria-label="Info"
-        >
-          <span className="nav-icon">ℹ️</span>
-          <span className="nav-label">Info</span>
-        </button>
-      </nav>
+      {/* Mobile Bottom Navigation */}
+      {isMobileApp && (
+        <nav className="nav-tabs">
+          <button 
+            className={`nav-tab ${activeTab === 'chat' ? 'active' : ''}`}
+            onClick={() => setActiveTab('chat')}
+            aria-label="Chat"
+          >
+            <span className="nav-icon">💬</span>
+            <span className="nav-label">Chat</span>
+          </button>
+          <button 
+            className={`nav-tab ${activeTab === 'peers' ? 'active' : ''}`}
+            onClick={() => setActiveTab('peers')}
+            aria-label="Peers"
+          >
+            <span className="nav-icon">👥</span>
+            <span className="nav-label">Peers</span>
+          </button>
+          <button 
+            className={`nav-tab ${activeTab === 'dev' ? 'active' : ''}`}
+            onClick={() => setActiveTab('dev')}
+            aria-label="Developer Console"
+          >
+            <span className="nav-icon">⚡</span>
+            <span className="nav-label">Dev</span>
+          </button>
+          <button 
+            className={`nav-tab ${activeTab === 'fun' ? 'active' : ''}`}
+            onClick={() => setActiveTab('fun')}
+            aria-label="Entertainment Hub"
+          >
+            <span className="nav-icon">🎮</span>
+            <span className="nav-label">Fun</span>
+          </button>
+          <button 
+            className={`nav-tab ${activeTab === 'info' ? 'active' : ''}`}
+            onClick={() => setActiveTab('info')}
+            aria-label="Info"
+          >
+            <span className="nav-icon">ℹ️</span>
+            <span className="nav-label">Info</span>
+          </button>
+        </nav>
+      )}
     </div>
   );
 }
