@@ -29,25 +29,27 @@ function App() {
   useEffect(() => {
     console.log('App mounting, checking mobile app status...');
     
-    // Detect if running as mobile app (Capacitor) or mobile browser for testing
+    // Detect if running as mobile app (Capacitor) or mobile browser
     const checkMobileApp = () => {
       const isCapacitor = typeof window !== 'undefined' && 
         window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
       
-      // For testing: also enable mobile layout on mobile browsers
-      const isMobileBrowser = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
-        window.innerWidth <= 768;
+      // Only treat as mobile if screen is small AND user agent indicates mobile
+      const isMobileBrowser = window.innerWidth <= 768 && 
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      
+      const shouldUseMobileLayout = isCapacitor || isMobileBrowser;
       
       console.log('Mobile app detection:', { 
         hasCapacitor: !!window.Capacitor, 
         isNative: isCapacitor,
         isMobileBrowser,
+        shouldUseMobileLayout,
         userAgent: navigator.userAgent,
         screenWidth: window.innerWidth
       });
       
-      // Enable mobile layout for native apps OR mobile browsers (for testing)
-      setIsMobileApp(isCapacitor || isMobileBrowser);
+      setIsMobileApp(shouldUseMobileLayout);
     };
     
     checkMobileApp();
@@ -229,10 +231,14 @@ function App() {
             <div className="brand-text">
               <h1>Gizli</h1>
               <p className="tagline">Secure End-to-End Encrypted Chat</p>
+              {/* Debug indicator */}
+              <small className="debug-info">
+                Layout: {isMobileApp ? 'Mobile' : 'Desktop'} | Screen: {window.innerWidth}px
+              </small>
             </div>
           </div>
           
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation - Show by default unless mobile */}
           {!isMobileApp && (
             <nav className="desktop-nav">
               <button 
