@@ -104,7 +104,50 @@
   animation: errorFadeIn 0.3s ease-out;
 }
 
+.status-message {
+  font-size: 0.8rem;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 4px;
+  animation: statusFadeIn 0.3s ease-out;
+}
+
+.status-message.ready {
+  color: #00ff88;
+  background: rgba(0, 255, 136, 0.1);
+  border: 1px solid rgba(0, 255, 136, 0.3);
+}
+
+.status-message.connecting {
+  color: #ffa502;
+  background: rgba(255, 165, 2, 0.1);
+  border: 1px solid rgba(255, 165, 2, 0.3);
+}
+
+.status-message.connected {
+  color: #00ff88;
+  background: rgba(0, 255, 136, 0.1);
+  border: 1px solid rgba(0, 255, 136, 0.3);
+}
+
+.status-message.error {
+  color: #ff4757;
+  background: rgba(255, 71, 87, 0.1);
+  border: 1px solid rgba(255, 71, 87, 0.3);
+}
+
 @keyframes errorFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes statusFadeIn {
   from {
     opacity: 0;
     transform: translateY(-10px);
@@ -119,6 +162,31 @@
   opacity: 0.6;
   cursor: not-allowed;
   transform: none !important;
+}
+
+.retry-btn {
+  background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  margin-top: 0.5rem;
+  width: 100%;
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+}
+
+.retry-btn:hover:not(:disabled) {
+  background: linear-gradient(45deg, #ff5252, #ff7979);
+  box-shadow: 0 6px 16px rgba(255, 107, 107, 0.4);
+  transform: translateY(-2px);
+}
+
+.retry-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .connect-btn.connecting {

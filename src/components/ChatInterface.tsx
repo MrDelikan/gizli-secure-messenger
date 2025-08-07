@@ -30,6 +30,8 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
   const [peerKeyInput, setPeerKeyInput] = useState('');
   const [isConnecting, setIsConnecting] = useState(false);
   const [lastError, setLastError] = useState<string | null>(null);
+  const [connectionStatus, setConnectionStatus] = useState<'ready' | 'connecting' | 'connected' | 'error'>('ready');
+  const [statusMessage, setStatusMessage] = useState<string>('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -40,6 +42,17 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
     scrollToBottom();
   }, [messages]);
 
+  useEffect(() => {
+    // Initialize status based on current state
+    if (publicKey && !currentPeer) {
+      setConnectionStatus('ready');
+      setStatusMessage('Ready to connect');
+    } else if (currentPeer) {
+      setConnectionStatus('connected');
+      setStatusMessage('Secure connection established');
+    }
+  }, [publicKey, currentPeer]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -49,7 +62,8 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
 
     if (!currentPeer) {
       setLastError('No peer connected');
-      alert('No peer connected. Please connect to a peer first.');
+      setConnectionStatus('error');
+      setStatusMessage('No peer connected');
       return;
     }
 
@@ -58,17 +72,20 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
       await onSendMessage(messageText.trim());
       setMessageText('');
       setLastError(null);
+      setConnectionStatus('connected');
+      setStatusMessage('Message sent successfully');
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to send message';
       console.error('Send message failed:', error);
       setLastError(errorMessage);
+      setConnectionStatus('error');
       
       if (errorMessage.includes('not connected') || errorMessage.includes('disconnected')) {
-        alert('Connection lost. Please reconnect to the peer.');
+        setStatusMessage('Connection lost - please reconnect');
       } else if (errorMessage.includes('encryption')) {
-        alert('Encryption error. Please try reconnecting.');
+        setStatusMessage('Encryption error - try reconnecting');
       } else {
-        alert(`Failed to send message: ${errorMessage}`);
+        setStatusMessage('Failed to send message');
       }
     }
   };
@@ -84,13 +101,15 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
   const handleConnect = async () => {
     if (!peerKeyInput.trim()) {
       setLastError('Please enter a peer public key');
-      alert('Please enter a peer public key');
+      setConnectionStatus('error');
+      setStatusMessage('Peer key required');
       return;
     }
 
     if (!onConnectToPeer) {
       setLastError('Connection function not available');
-      alert('Connection function not available');
+      setConnectionStatus('error');
+      setStatusMessage('Connection function not available');
       return;
     }
 
@@ -98,32 +117,38 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
     const key = peerKeyInput.trim();
     if (key.length < 32) {
       setLastError('Invalid key format - key too short');
-      alert('Invalid key format. Please check the public key and try again.');
+      setConnectionStatus('error');
+      setStatusMessage('Invalid key format');
       return;
     }
 
     setIsConnecting(true);
+    setConnectionStatus('connecting');
+    setStatusMessage('Establishing secure connection...');
     setLastError(null);
 
     try {
       console.log('Attempting to connect to peer:', key.substring(0, 8) + '...');
       await onConnectToPeer(key);
       setPeerKeyInput('');
+      setConnectionStatus('connected');
+      setStatusMessage('Successfully connected');
       console.log('Connection successful');
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown connection error';
       console.error('Connection failed:', error);
       setLastError(errorMessage);
+      setConnectionStatus('error');
       
-      // Show user-friendly error messages
+      // Set specific status messages based on error type
       if (errorMessage.includes('timeout')) {
-        alert('Connection timeout. The peer might be offline or unreachable.');
+        setStatusMessage('Connection timeout - peer may be offline');
       } else if (errorMessage.includes('refused') || errorMessage.includes('rejected')) {
-        alert('Connection refused. Please check the peer key and try again.');
+        setStatusMessage('Connection refused - check peer key');
       } else if (errorMessage.includes('network')) {
-        alert('Network error. Please check your internet connection.');
+        setStatusMessage('Network error - check internet connection');
       } else {
-        alert(`Connection failed: ${errorMessage}\n\nPlease check:\n• The peer key is correct\n• The peer is online\n• Your internet connection`);
+        setStatusMessage('Connection failed - please retry');
       }
     } finally {
       setIsConnecting(false);
@@ -182,13 +207,28 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
                   ⚠️ {lastError}
                 </div>
               )}
+              
+              {/* Status Display */}
+              {statusMessage && (
+                <div className={`status-message ${connectionStatus}`}>
+                  {connectionStatus === 'connecting' && '🔄 '}
+                  {connectionStatus === 'connected' && '✅ '}
+                  {connectionStatus === 'error' && '❌ '}
+                  {connectionStatus === 'ready' && '🔑 '}
+                  {statusMessage}
+                </div>
+              )}
               <input 
                 type="text" 
                 id="peer-id"
                 value={peerKeyInput}
                 onChange={(e) => {
                   setPeerKeyInput(e.target.value);
-                  if (lastError) setLastError(null); // Clear error when user types
+                  if (lastError) {
+                    setLastError(null);
+                    setConnectionStatus('ready');
+                    setStatusMessage('');
+                  }
                 }}
                 onKeyPress={(e) => e.key === 'Enter' && !isConnecting && handleConnect()}
                 placeholder="Enter peer's public key..."
@@ -202,6 +242,17 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
               >
                 {isConnecting ? '🔄 Connecting...' : '🌐 Connect'}
               </button>
+              
+              {/* Retry button for failed connections */}
+              {connectionStatus === 'error' && peerKeyInput.trim() && (
+                <button 
+                  className="retry-btn"
+                  onClick={handleConnect}
+                  disabled={isConnecting}
+                >
+                  🔄 Retry Connection
+                </button>
+              )}
             </div>
             
             <div className="divider">
@@ -221,7 +272,10 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
             {publicKey && (
               <div className="debug-info">
                 <div>🔑 Your Key: {publicKey.substring(0, 16)}...</div>
-                <div>📡 Status: Ready to connect</div>
+                <div>📡 Status: {connectionStatus === 'ready' ? 'Ready to connect' : 
+                                connectionStatus === 'connecting' ? 'Connecting...' :
+                                connectionStatus === 'connected' ? 'Connected' :
+                                'Connection error'}</div>
               </div>
             )}
           </div>
