@@ -257,27 +257,50 @@ export const DeveloperConsole: React.FC<DeveloperConsoleProps> = ({ network, isO
   if (!isOpen) return null;
 
   return (
-    <div className="developer-console-overlay">
-      <div className="developer-console-container">
-        <div className="console-header">
-          <h2 className="console-title">
-            <span className="dev-icon">⚡</span>
-            Developer Console
-          </h2>
-          <button className="close-console-btn" onClick={onClose}>
-            ×
-          </button>
-        </div>
-
-        <div className="console-tabs">
-          <button 
-            className={`tab ${activeTab === 'metrics' ? 'active' : ''}`}
-            onClick={() => setActiveTab('metrics')}
-          >
-            📊 Network
-          </button>
-          <button 
-            className={`tab ${activeTab === 'performance' ? 'active' : ''}`}
+    <SectionWrapper
+      title="Developer Console"
+      subtitle="Network diagnostics and cryptographic tools"
+      icon="⚡"
+      className="dev-theme"
+    >
+      <div className="console-tabs">
+        <button 
+          className={`tab ${activeTab === 'metrics' ? 'active' : ''}`}
+          onClick={() => setActiveTab('metrics')}
+        >
+          📊 Network
+        </button>
+        <button 
+          className={`tab ${activeTab === 'performance' ? 'active' : ''}`}
+          onClick={() => setActiveTab('performance')}
+        >
+          ⚡ Performance
+        </button>
+        <button 
+          className={`tab ${activeTab === 'logs' ? 'active' : ''}`}
+          onClick={() => setActiveTab('logs')}
+        >
+          📋 Logs
+        </button>
+        <button 
+          className={`tab ${activeTab === 'diagnostics' ? 'active' : ''}`}
+          onClick={() => setActiveTab('diagnostics')}
+        >
+          🔍 Diagnostics
+        </button>
+        <button 
+          className={`tab ${activeTab === 'plugins' ? 'active' : ''}`}
+          onClick={() => setActiveTab('plugins')}
+        >
+          🧩 Plugins
+        </button>
+        <button 
+          className={`tab ${activeTab === 'config' ? 'active' : ''}`}
+          onClick={() => setActiveTab('config')}
+        >
+          ⚙️ Config
+        </button>
+      </div>
             onClick={() => setActiveTab('performance')}
           >
             🚀 Performance
@@ -751,7 +774,6 @@ export const DeveloperConsole: React.FC<DeveloperConsoleProps> = ({ network, isO
             </div>
           )}
         </div>
-      </div>
-    </div>
+    </SectionWrapper>
   );
 };

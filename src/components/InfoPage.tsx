@@ -1,4 +1,5 @@
 import React from 'react';
+import { SectionWrapper } from './SectionWrapper';
 import './InfoPage.css';
 import gizliLogo from '../assets/gizli-logo.jpg';
 
@@ -8,45 +9,48 @@ interface InfoPageProps {
 
 const InfoPage: React.FC<InfoPageProps> = ({ onClose }) => {
   return (
-    <div className="info-page">
-      <div className="info-content">
-        <div className="info-header">
-          <img src={gizliLogo} alt="Gizli Logo" className="info-logo" />
-          <h1 className="info-title">GIZLI</h1>
-          <p className="info-subtitle">Military-Grade End-to-End Encryption</p>
-          <button className="close-btn" onClick={onClose}>×</button>
-        </div>
+    <SectionWrapper
+      title="Information"
+      subtitle="About Gizli and military-grade security features"
+      icon="ℹ️"
+      className="info-theme"
+    >
+      <div className="info-header">
+        <img src={gizliLogo} alt="Gizli Logo" className="info-logo" />
+        <h1 className="info-title">GIZLI</h1>
+        <p className="info-subtitle">Military-Grade End-to-End Encryption</p>
+      </div>
 
-        <div className="info-grid">
-          <section className="info-section">
-            <h2 className="section-title">🔒 QUANTUM-RESISTANT SECURITY</h2>
-            <div className="feature-grid">
-              <div className="feature-card">
-                <h3>Signal Protocol</h3>
-                <p>State-of-the-art double ratchet encryption providing forward secrecy and post-compromise security.</p>
-              </div>
-              <div className="feature-card">
-                <h3>X25519 + ChaCha20-Poly1305</h3>
-                <p>Military-grade elliptic curve cryptography with authenticated encryption resistant to timing attacks.</p>
-              </div>
-              <div className="feature-card">
-                <h3>Perfect Forward Secrecy</h3>
-                <p>Each message uses a unique encryption key that is immediately destroyed after use.</p>
-              </div>
+      <div className="info-grid">
+        <section className="info-section">
+          <h2 className="section-title">🔒 QUANTUM-RESISTANT SECURITY</h2>
+          <div className="feature-grid">
+            <div className="feature-card">
+              <h3>Signal Protocol</h3>
+              <p>State-of-the-art double ratchet encryption providing forward secrecy and post-compromise security.</p>
             </div>
-          </section>
+            <div className="feature-card">
+              <h3>X25519 + ChaCha20-Poly1305</h3>
+              <p>Military-grade elliptic curve cryptography with authenticated encryption resistant to timing attacks.</p>
+            </div>
+            <div className="feature-card">
+              <h3>Perfect Forward Secrecy</h3>
+              <p>Each message uses a unique encryption key that is immediately destroyed after use.</p>
+            </div>
+          </div>
+        </section>
 
-          <section className="info-section">
-            <h2 className="section-title">🌐 PEER-TO-PEER ARCHITECTURE</h2>
-            <div className="architecture-visual">
-              <div className="node">
-                <div className="node-inner">YOU</div>
-                <div className="connection-line"></div>
-              </div>
-              <div className="node">
-                <div className="node-inner">PEER</div>
-              </div>
+        <section className="info-section">
+          <h2 className="section-title">🌐 PEER-TO-PEER ARCHITECTURE</h2>
+          <div className="architecture-visual">
+            <div className="node">
+              <div className="node-inner">YOU</div>
+              <div className="connection-line"></div>
             </div>
+            <div className="node">
+              <div className="node-inner">PEER</div>
+            </div>
+          </div>
             <p className="architecture-desc">
               Direct encrypted communication without central servers. Your messages never touch third-party infrastructure.
             </p>
@@ -184,8 +188,7 @@ const InfoPage: React.FC<InfoPageProps> = ({ onClose }) => {
             <p>Open source security for a private world</p>
           </div>
         </div>
-      </div>
-    </div>
+    </SectionWrapper>
   );
 };
 
