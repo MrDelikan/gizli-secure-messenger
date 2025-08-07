@@ -34,7 +34,7 @@ export interface MetadataPayload {
 
 export class SecureP2PNetwork {
   private crypto: SecureCrypto;
-  private identityKeyPair: KeyPair;
+  private identityKeyPair: KeyPair | null = null;
   private peers = new Map<string, PeerConnection>();
   private messageHandlers = new Map<string, (message: string, fromPeer: string) => void>();
   private networkAnalytics: NetworkAnalytics;
@@ -42,7 +42,6 @@ export class SecureP2PNetwork {
 
   constructor() {
     this.crypto = SecureCrypto.getInstance();
-    this.identityKeyPair = this.crypto.generateIdentityKeyPair();
     this.networkAnalytics = new NetworkAnalytics();
     console.log('P2P Network: Direct mode (no signaling server)');
   }
@@ -50,12 +49,22 @@ export class SecureP2PNetwork {
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
 
-    // Direct mode - no signaling server needed
-    console.log('P2P Network initialized in direct mode');
-    
-    // Start dummy traffic generation for metadata protection
-    this.startDummyTrafficGeneration();
-    this.isInitialized = true;
+    try {
+      // Initialize crypto system first
+      await this.crypto.initialize();
+      
+      // Generate identity key pair after crypto is ready
+      this.identityKeyPair = this.crypto.generateIdentityKeyPair();
+      
+      console.log('P2P Network initialized in direct mode');
+      
+      // Start dummy traffic generation for metadata protection
+      this.startDummyTrafficGeneration();
+      this.isInitialized = true;
+    } catch (error) {
+      console.error('Network initialization failed:', error);
+      throw error;
+    }
   }
 
   async connectToPeer(peerPublicKey: string): Promise<void> {
@@ -308,6 +317,9 @@ export class SecureP2PNetwork {
   }
 
   getPublicKeyHex(): string {
+    if (!this.identityKeyPair) {
+      throw new Error('Network not initialized. Call initialize() first.');
+    }
     return Array.from(this.identityKeyPair.publicKey)
       .map(b => b.toString(16).padStart(2, '0'))
       .join('');

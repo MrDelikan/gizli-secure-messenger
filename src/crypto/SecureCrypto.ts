@@ -5,8 +5,15 @@ import { randomBytes } from '@noble/hashes/utils';
 import { sha256 } from '@noble/hashes/sha256';
 import { hkdf } from '@noble/hashes/hkdf';
 
-// Initialize libsodium
-await sodium.ready;
+// Store sodium initialization promise
+let sodiumReady: Promise<void> | null = null;
+
+const initializeSodium = async (): Promise<void> => {
+  if (!sodiumReady) {
+    sodiumReady = sodium.ready;
+  }
+  return sodiumReady;
+};
 
 export interface KeyPair {
   publicKey: Uint8Array;
@@ -33,6 +40,7 @@ export interface SecureSessionState {
 export class SecureCrypto {
   private static instance: SecureCrypto;
   private sessionStates = new Map<string, SecureSessionState>();
+  private isInitialized = false;
 
   private constructor() {}
 
@@ -44,9 +52,32 @@ export class SecureCrypto {
   }
 
   /**
+   * Initialize the crypto system - MUST be called before any crypto operations
+   */
+  async initialize(): Promise<void> {
+    if (this.isInitialized) return;
+    
+    try {
+      await initializeSodium();
+      this.isInitialized = true;
+      console.log('SecureCrypto initialized successfully');
+    } catch (error) {
+      console.error('Failed to initialize SecureCrypto:', error);
+      throw new Error('Crypto initialization failed');
+    }
+  }
+
+  private ensureInitialized(): void {
+    if (!this.isInitialized) {
+      throw new Error('SecureCrypto not initialized. Call initialize() first.');
+    }
+  }
+
+  /**
    * Generate a new X25519 key pair for ECDH
    */
   generateKeyPair(): KeyPair {
+    this.ensureInitialized();
     const secretKey = randomBytes(32);
     const publicKey = x25519.getPublicKey(secretKey);
     return { publicKey, secretKey };
@@ -56,6 +87,7 @@ export class SecureCrypto {
    * Generate identity key pair for long-term identity
    */
   generateIdentityKeyPair(): KeyPair {
+    this.ensureInitialized();
     const keyPair = sodium.crypto_sign_keypair();
     return {
       publicKey: keyPair.publicKey,
