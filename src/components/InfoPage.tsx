@@ -1,27 +1,22 @@
 import React from 'react';
-import { SectionWrapper } from './SectionWrapper';
 import './InfoPage.css';
 import gizliLogo from '../assets/gizli-logo.jpg';
 
 interface InfoPageProps {
-  onClose: () => void;
+  onClose?: () => void;
 }
 
-const InfoPage: React.FC<InfoPageProps> = ({ onClose }) => {
+const InfoPage: React.FC<InfoPageProps> = () => {
   return (
-    <SectionWrapper
-      title="Information"
-      subtitle="About Gizli and military-grade security features"
-      icon="ℹ️"
-      className="info-theme"
-    >
-      <div className="info-header">
-        <img src={gizliLogo} alt="Gizli Logo" className="info-logo" />
-        <h1 className="info-title">GIZLI</h1>
-        <p className="info-subtitle">Military-Grade End-to-End Encryption</p>
-      </div>
+    <div className="info-page">
+      <div className="info-content info-theme">
+        <div className="info-header">
+          <img src={gizliLogo} alt="Gizli Logo" className="info-logo" />
+          <h1 className="info-title">GIZLI</h1>
+          <p className="info-subtitle">Military-Grade End-to-End Encryption</p>
+        </div>
 
-      <div className="info-grid">
+        <div className="info-grid">
         <section className="info-section">
           <h2 className="section-title">🔒 QUANTUM-RESISTANT SECURITY</h2>
           <div className="feature-grid">
@@ -188,7 +183,8 @@ const InfoPage: React.FC<InfoPageProps> = ({ onClose }) => {
             <p>Open source security for a private world</p>
           </div>
         </div>
-    </SectionWrapper>
+      </div>
+    </div>
   );
 };
 

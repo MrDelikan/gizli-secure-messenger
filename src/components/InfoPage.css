@@ -1,5 +1,27 @@
 /* InfoPage.css - Styling for the information page */
 
+/* Main container */
+.info-page {
+  width: 100%;
+  min-height: 100%;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.info-content {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.info-theme {
+  background: transparent;
+  color: #e0e0e0;
+}
+
 /* Remove any wrapper override since we're using SectionWrapper */
 .info-header {
   text-align: center;

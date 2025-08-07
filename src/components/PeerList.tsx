@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { SectionWrapper } from './SectionWrapper';
 import './PeerList.css';
 
 interface PeerListProps {
@@ -38,12 +37,7 @@ export const PeerList: React.FC<PeerListProps> = ({
   };
 
   return (
-    <SectionWrapper
-      title="Peer Network"
-      subtitle="Manage your secure P2P connections"
-      icon="👥"
-      className="peers-theme"
-    >
+    <div className="peer-list">
       <div className="peer-list-controls">
         <button
           className="connect-button"
@@ -130,6 +124,6 @@ export const PeerList: React.FC<PeerListProps> = ({
           </ul>
         </div>
       </div>
-    </SectionWrapper>
+    </div>
   );
 };

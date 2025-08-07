@@ -113,14 +113,25 @@
   border-radius: 1rem;
   overflow: hidden;
   transition: all 0.3s ease;
-  opacity: 0.3;
-  transform: scale(0.95);
-  pointer-events: none;
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
 }
 
-.app-section.active {
+/* Desktop: All sections visible */
+.desktop-app .app-section {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: all;
+}
+
+/* Mobile: Only active section visible */
+.mobile-app .app-section {
+  opacity: 0.3;
+  transform: scale(0.95);
+  pointer-events: none;
+}
+
+.mobile-app .app-section.active {
   opacity: 1;
   transform: scale(1);
   pointer-events: all;

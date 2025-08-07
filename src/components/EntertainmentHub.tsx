@@ -1,18 +1,15 @@
 import React, { useState } from 'react';
-import { SectionWrapper } from './SectionWrapper';
 import { CryptoBot } from './CryptoBot';
 import { CyberGame } from './CyberGame';
 import './EntertainmentHub.css';
 
 interface EntertainmentHubProps {
-  isOpen: boolean;
-  onClose: () => void;
+  isOpen?: boolean;
+  onClose?: () => void;
 }
 
-const EntertainmentHub: React.FC<EntertainmentHubProps> = ({ isOpen, onClose }) => {
+const EntertainmentHub: React.FC<EntertainmentHubProps> = () => {
   const [activeFeature, setActiveFeature] = useState<'menu' | 'bot' | 'games'>('menu');
-
-  if (!isOpen) return null;
 
   const handleFeatureSelect = (feature: 'bot' | 'games') => {
     setActiveFeature(feature);
@@ -33,12 +30,7 @@ const EntertainmentHub: React.FC<EntertainmentHubProps> = ({ isOpen, onClose }) 
 
   // Main menu
   return (
-    <SectionWrapper
-      title="Entertainment Hub"
-      subtitle="Take a break from secure communications and explore interactive features"
-      icon="🎮"
-      className="fun-theme"
-    >
+    <div className="entertainment-hub">
       <div className="entertainment-intro">
         <h3>Welcome to the Cyber Zone</h3>
         <p>Take a break from secure communications and explore our entertainment features.</p>
@@ -86,7 +78,7 @@ const EntertainmentHub: React.FC<EntertainmentHubProps> = ({ isOpen, onClose }) 
           <p>Entertainment features are isolated from your secure communications for maximum privacy.</p>
         </div>
       </div>
-    </SectionWrapper>
+    </div>
   );
 };
 
