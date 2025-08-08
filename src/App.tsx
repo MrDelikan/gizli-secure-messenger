@@ -264,6 +264,7 @@ function App() {
             <img src={gizliLogo} alt="Gizli Logo" className="app-logo" />
             <div className="brand-text">
               <h1>Gizli</h1>
+              <div className="privacy-tagline">Military-Grade Privacy</div>
             </div>
           </div>
         </div>
