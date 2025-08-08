@@ -210,3 +210,103 @@
     flex-direction: column;
   }
 }
+
+/* Identity Section */
+.identity-section {
+  padding: 1.5rem;
+  background: linear-gradient(135deg, rgba(0, 255, 136, 0.05), rgba(0, 0, 0, 0.2));
+  border: 1px solid rgba(0, 255, 136, 0.2);
+  border-radius: 12px;
+  margin: 1rem;
+}
+
+.identity-section h3 {
+  margin: 0 0 1rem 0;
+  color: var(--primary-green);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.identity-section p {
+  margin: 0 0 1rem 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+}
+
+.key-display {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.key-text {
+  flex: 1;
+  padding: 0.75rem;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  border-radius: 8px;
+  color: var(--primary-green);
+  font-family: 'Courier New', monospace;
+  font-size: 0.8rem;
+  word-break: break-all;
+  overflow-wrap: break-word;
+}
+
+.copy-button {
+  padding: 0.75rem 1rem;
+  background: var(--primary-green);
+  color: var(--bg-dark);
+  border: none;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.copy-button:hover {
+  background: var(--secondary-green);
+  transform: translateY(-1px);
+}
+
+.key-actions {
+  margin-bottom: 1rem;
+}
+
+.generate-keys-button {
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 162, 255, 0.1));
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  color: var(--primary-green);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.generate-keys-button:hover {
+  background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 162, 255, 0.2));
+  border-color: rgba(0, 255, 136, 0.5);
+  transform: translateY(-1px);
+}
+
+.generate-keys-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.identity-info {
+  padding: 0.75rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  border-left: 3px solid var(--primary-green);
+}
+
+.identity-info small {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.8rem;
+  line-height: 1.4;
+}

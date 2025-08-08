@@ -27,8 +27,8 @@
   min-height: 100vh !important;
 }
 
-/* Mobile Header */
-.mobile-header {
+/* Mobile Header - Match JSX class names */
+.mobile-app .app-header {
   flex-shrink: 0;
   background: rgba(10, 10, 25, 0.95);
   -webkit-backdrop-filter: blur(20px);
@@ -39,20 +39,20 @@
   position: relative;
 }
 
-.header-main {
+.mobile-app .header-main {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 3rem;
 }
 
-.logo-container {
+.mobile-app .logo-container {
   display: flex;
   align-items: center;
   gap: 0.75rem;
 }
 
-.app-logo {
+.mobile-app .app-logo {
   width: 2.5rem;
   height: 2.5rem;
   border-radius: 50%;
@@ -60,7 +60,7 @@
   border: 2px solid rgba(0, 255, 136, 0.3);
 }
 
-.brand-text h1 {
+.mobile-app .brand-text h1 {
   font-size: 1.5rem;
   font-weight: 700;
   margin: 0;
@@ -113,6 +113,7 @@
   font-size: 0.75rem;
   min-height: 3rem;
   -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
   -webkit-user-select: none;
   user-select: none;
   outline: none;

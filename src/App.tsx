@@ -257,15 +257,12 @@ function App() {
 
   return (
     <div className={`app ${isMobileApp ? 'mobile-app' : 'desktop-app'}`}>
-      {/* Stylized Header with Logo and Script Font */}
+      {/* Simple Header with Logo and Text */}
       <header className="app-header">
         <div className="header-main">
           <div className="logo-container">
             <img src={gizliLogo} alt="Gizli Logo" className="app-logo" />
-            <div className="brand-text">
-              <h1>Gizli</h1>
-              <div className="privacy-tagline">Military-Grade Privacy</div>
-            </div>
+            <h1>Gizli</h1>
           </div>
         </div>
       </header>

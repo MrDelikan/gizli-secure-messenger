@@ -7,6 +7,8 @@ interface PeerListProps {
   onSelectPeer: (peer: string) => void;
   onConnectToPeer: (peer: string) => void;
   onDisconnectPeer: (peer: string) => void;
+  publicKey?: string;
+  onGenerateNewKeys?: () => Promise<string | null>;
 }
 
 export const PeerList: React.FC<PeerListProps> = ({
@@ -14,10 +16,14 @@ export const PeerList: React.FC<PeerListProps> = ({
   currentPeer,
   onSelectPeer,
   onConnectToPeer,
-  onDisconnectPeer
+  onDisconnectPeer,
+  publicKey,
+  onGenerateNewKeys
 }) => {
   const [showConnectForm, setShowConnectForm] = useState(false);
   const [peerKeyInput, setPeerKeyInput] = useState('');
+  const [showCopySuccess, setShowCopySuccess] = useState(false);
+  const [isGeneratingKeys, setIsGeneratingKeys] = useState(false);
 
   const handleConnect = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,6 +42,29 @@ export const PeerList: React.FC<PeerListProps> = ({
     return `${key.slice(0, 8)}...${key.slice(-8)}`;
   };
 
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setShowCopySuccess(true);
+      setTimeout(() => setShowCopySuccess(false), 2000);
+    } catch (error) {
+      console.error('Failed to copy to clipboard:', error);
+    }
+  };
+
+  const handleGenerateNewKeys = async () => {
+    if (!onGenerateNewKeys) return;
+    
+    setIsGeneratingKeys(true);
+    try {
+      await onGenerateNewKeys();
+    } catch (error) {
+      console.error('Failed to generate keys:', error);
+    } finally {
+      setIsGeneratingKeys(false);
+    }
+  };
+
   return (
     <div className="peer-list">
       <div className="peer-list-controls">
@@ -46,6 +75,41 @@ export const PeerList: React.FC<PeerListProps> = ({
           ➕ Connect to New Peer
         </button>
       </div>
+
+      {/* Share Your Identity Section */}
+      {publicKey && (
+        <div className="identity-section">
+          <h3>📤 Share Your Identity</h3>
+          <p>Share this public key with others to allow them to connect to you:</p>
+          <div className="key-display">
+            <div className="key-text">
+              {publicKey}
+            </div>
+            <button
+              className="copy-button"
+              onClick={() => copyToClipboard(publicKey)}
+              title="Copy to clipboard"
+            >
+              {showCopySuccess ? '✅ Copied!' : '📋 Copy'}
+            </button>
+          </div>
+          <div className="key-actions">
+            <button
+              className="generate-keys-button"
+              onClick={handleGenerateNewKeys}
+              disabled={isGeneratingKeys}
+            >
+              {isGeneratingKeys ? '🔄 Generating...' : '🔑 Generate New Keys'}
+            </button>
+          </div>
+          <div className="identity-info">
+            <small>
+              🔒 Your identity is cryptographically secure. 
+              Only share this key with people you trust.
+            </small>
+          </div>
+        </div>
+      )}
 
       {showConnectForm && (
         <div className="connect-form">
