@@ -117,6 +117,14 @@
   overflow: hidden;
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
+  opacity: 0.3;
+  transform: scale(0.98);
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+/* Active section styling */
+.desktop-app .app-section.active {
   opacity: 1;
   transform: scale(1);
   pointer-events: all;
@@ -213,6 +221,19 @@
   overflow: hidden;
   padding: 1rem 1rem 2rem 1rem;
   margin-bottom: 1rem;
+}
+
+/* Desktop Layout - Clean Content Area */
+.desktop-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .desktop-main {

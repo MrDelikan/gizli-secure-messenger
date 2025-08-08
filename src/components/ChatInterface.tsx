@@ -16,6 +16,7 @@ interface ChatInterfaceProps {
   onConnectToPeer?: (peerKey: string) => void;
   onGenerateNewKeys?: () => Promise<string | null>;
   publicKey?: string;
+  onVerifyPeer?: (peerKey: string) => void;
 }
 
 export const ChatInterface: React.FC<ChatInterfaceProps> = ({
@@ -24,7 +25,8 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
   onSendMessage,
   onConnectToPeer,
   onGenerateNewKeys,
-  publicKey
+  publicKey,
+  onVerifyPeer
 }) => {
   const [messageText, setMessageText] = useState('');
   const [peerKeyInput, setPeerKeyInput] = useState('');
@@ -249,95 +251,155 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
   if (!currentPeer) {
     return (
       <div className="chat-interface no-peer">
-        <div className="login-container">
-          <div className="login-welcome">
-            <h2>🔒 Welcome to Gizli</h2>
-            <p>Secure End-to-End Encrypted Communication</p>
-          </div>          
-          <div className="login-form">
-            <div className="input-group">
-              <label htmlFor="peer-id">Connect to Peer:</label>
-              {lastError && (
-                <div className="error-message">
-                  ⚠️ {lastError}
+        <div className="welcome-container">
+          {/* Hero Section */}
+          <div className="welcome-hero">
+            <div className="hero-icon">�</div>
+            <h1>Welcome to Gizli</h1>
+            <p className="hero-tagline">Military-grade end-to-end encrypted communication</p>
+            <div className="security-badges">
+              <span className="badge">🛡️ Post-Quantum</span>
+              <span className="badge">🔒 Perfect Forward Secrecy</span>
+              <span className="badge">👤 Anonymous</span>
+            </div>
+          </div>
+
+          {/* Quick Start Options */}
+          <div className="quick-start">
+            <h3>🚀 Quick Start</h3>
+            
+            {/* Share Your Key Section */}
+            <div className="start-section">
+              <div className="section-header">
+                <span className="section-icon">📤</span>
+                <h4>Share Your Identity</h4>
+                <p>Share this key with someone to start chatting</p>
+              </div>
+              <div className="key-sharing">
+                {publicKey && (
+                  <div className="public-key-display">
+                    <code className="key-code">{publicKey}</code>
+                    <button 
+                      className={`copy-key-btn ${showCopySuccess ? 'copied' : ''}`} 
+                      onClick={handleShareKey}
+                      title="Copy to clipboard"
+                    >
+                      {showCopySuccess ? '✅' : '📋'}
+                    </button>
+                  </div>
+                )}
+                <div className="key-actions">
+                  <button 
+                    className={`action-btn share-key ${showCopySuccess ? 'copy-success' : ''}`} 
+                    onClick={handleShareKey}
+                  >
+                    {copyButtonText}
+                  </button>
+                  <button 
+                    className="action-btn generate-key" 
+                    onClick={handleGenerateKeys}
+                    disabled={isGeneratingKeys}
+                    title="Generate new cryptographic identity"
+                  >
+                    {isGeneratingKeys ? '🔄 Generating...' : '🔄 New Identity'}
+                  </button>
                 </div>
-              )}
+              </div>
+            </div>
+
+            {/* Connect to Peer Section */}
+            <div className="start-section">
+              <div className="section-header">
+                <span className="section-icon">🌐</span>
+                <h4>Connect to Someone</h4>
+                <p>Enter their public key to establish secure connection</p>
+              </div>
               
-              {/* Status Display */}
-              {statusMessage && (
-                <div className={`status-message ${connectionStatus} ${showCopySuccess ? 'copy-success' : ''}`}>
-                  {connectionStatus === 'connecting' && '🔄 '}
-                  {connectionStatus === 'connected' && '✅ '}
-                  {connectionStatus === 'error' && '❌ '}
-                  {connectionStatus === 'ready' && '🔑 '}
-                  {statusMessage}
+              <div className="connection-form">
+                {lastError && (
+                  <div className="error-banner">
+                    <span className="error-icon">⚠️</span>
+                    <span className="error-text">{lastError}</span>
+                    <button className="error-close" onClick={() => setLastError(null)}>×</button>
+                  </div>
+                )}
+                
+                {statusMessage && !lastError && (
+                  <div className={`status-banner ${connectionStatus}`}>
+                    <span className="status-icon">
+                      {connectionStatus === 'connecting' && '🔄'}
+                      {connectionStatus === 'connected' && '✅'}
+                      {connectionStatus === 'ready' && '🔑'}
+                    </span>
+                    <span className="status-text">{statusMessage}</span>
+                  </div>
+                )}
+                
+                <div className="input-with-button">
+                  <input 
+                    type="text" 
+                    value={peerKeyInput}
+                    onChange={(e) => {
+                      setPeerKeyInput(e.target.value);
+                      if (lastError) {
+                        setLastError(null);
+                        setConnectionStatus('ready');
+                        setStatusMessage('');
+                      }
+                    }}
+                    onKeyPress={(e) => e.key === 'Enter' && !isConnecting && handleConnect()}
+                    placeholder="Paste peer's public key here..."
+                    className="peer-input-modern"
+                    disabled={isConnecting}
+                  />
+                  <button 
+                    className={`connect-btn-modern ${isConnecting ? 'connecting' : ''} ${!peerKeyInput.trim() ? 'disabled' : ''}`}
+                    onClick={handleConnect}
+                    disabled={isConnecting || !peerKeyInput.trim()}
+                  >
+                    {isConnecting ? (
+                      <>
+                        <span className="spinner"></span>
+                        Connecting...
+                      </>
+                    ) : (
+                      <>
+                        <span className="connect-icon">🌐</span>
+                        Connect
+                      </>
+                    )}
+                  </button>
                 </div>
-              )}
-              <input 
-                type="text" 
-                id="peer-id"
-                value={peerKeyInput}
-                onChange={(e) => {
-                  setPeerKeyInput(e.target.value);
-                  if (lastError) {
-                    setLastError(null);
-                    setConnectionStatus('ready');
-                    setStatusMessage('');
-                  }
-                }}
-                onKeyPress={(e) => e.key === 'Enter' && !isConnecting && handleConnect()}
-                placeholder="Enter peer's public key..."
-                className="peer-input"
-                disabled={isConnecting}
-              />
-              <button 
-                className={`connect-btn ${isConnecting ? 'connecting' : ''}`}
-                onClick={handleConnect}
-                disabled={isConnecting || !peerKeyInput.trim()}
-              >
-                {isConnecting ? '🔄 Connecting...' : '🌐 Connect'}
-              </button>
-              
-              {/* Retry button for failed connections */}
-              {connectionStatus === 'error' && peerKeyInput.trim() && (
-                <button 
-                  className="retry-btn"
-                  onClick={handleConnect}
-                  disabled={isConnecting}
-                >
-                  🔄 Retry Connection
-                </button>
-              )}
+                
+                {connectionStatus === 'error' && peerKeyInput.trim() && (
+                  <button 
+                    className="retry-btn-modern"
+                    onClick={handleConnect}
+                    disabled={isConnecting}
+                  >
+                    <span className="retry-icon">🔄</span>
+                    Try Again
+                  </button>
+                )}
+              </div>
             </div>
-            
-            <div className="divider">
-              <span>or</span>
-            </div>
-            
-            <div className="quick-actions">
-              <button 
-                className="action-btn generate-key" 
-                onClick={handleGenerateKeys}
-                disabled={isGeneratingKeys}
-              >
-                {isGeneratingKeys ? '🔄 Generating Keys...' : '🔑 Generate New Keys'}
-              </button>
-              <button 
-                className={`action-btn share-key ${showCopySuccess ? 'copy-success' : ''}`} 
-                onClick={handleShareKey}
-              >
-                {copyButtonText}
-              </button>
-            </div>
-            
-            {/* Connection Status Debug Info */}
+
+            {/* Status Information */}
             {publicKey && (
-              <div className="debug-info">
-                <div>🔑 Your Key: {publicKey.substring(0, 16)}...</div>
-                <div>📡 Status: {connectionStatus === 'ready' ? 'Ready to connect' : 
-                                connectionStatus === 'connecting' ? 'Connecting...' :
-                                connectionStatus === 'connected' ? 'Connected' :
-                                'Connection error'}</div>
+              <div className="connection-status">
+                <div className="status-row">
+                  <span className="status-label">🔑 Your Identity:</span>
+                  <span className="status-value">{publicKey.substring(0, 20)}...</span>
+                </div>
+                <div className="status-row">
+                  <span className="status-label">📡 Network Status:</span>
+                  <span className={`status-value status-${connectionStatus}`}>
+                    {connectionStatus === 'ready' && '🟢 Ready to Connect'}
+                    {connectionStatus === 'connecting' && '🟡 Establishing Connection...'}
+                    {connectionStatus === 'connected' && '🟢 Secure Channel Active'}
+                    {connectionStatus === 'error' && '🔴 Connection Failed'}
+                  </span>
+                </div>
               </div>
             )}
           </div>
@@ -350,9 +412,18 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
     <div className="chat-interface">
       <div className="chat-header">
         <h3>Secure Chat with {truncateKey(currentPeer)}</h3>
-        <div className="connection-status">
-          <span className="status-indicator online"></span>
-          Connected
+        <div className="header-actions">
+          <button
+            className="verify-peer-btn"
+            onClick={() => onVerifyPeer && onVerifyPeer(currentPeer || '')}
+            title="Verify peer identity"
+          >
+            🔐 Verify
+          </button>
+          <div className="connection-status">
+            <span className="status-indicator online"></span>
+            Connected
+          </div>
         </div>
       </div>
 

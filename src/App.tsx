@@ -5,6 +5,9 @@ import { PeerList } from './components/PeerList';
 import InfoPage from './components/InfoPage';
 import EntertainmentHub from './components/EntertainmentHub';
 import { DeveloperConsole } from './components/DeveloperConsole';
+import { NotificationSystem } from './components/NotificationSystem';
+import { PeerVerification } from './components/PeerVerification';
+import { useNotifications } from './hooks/useNotifications';
 import gizliLogo from './assets/gizli-logo.jpg';
 import './App.css';
 import './MobileApp.css';
@@ -25,6 +28,9 @@ function App() {
   const [publicKey, setPublicKey] = useState('');
   const [activeTab, setActiveTab] = useState<'chat' | 'peers' | 'dev' | 'fun' | 'info'>('chat');
   const [isMobileApp, setIsMobileApp] = useState(false);
+  const [showPeerVerification, setShowPeerVerification] = useState(false);
+  const [peerToVerify, setPeerToVerify] = useState<string>('');
+  const { notifications, removeNotification, showSuccess, showError, showWarning } = useNotifications();
 
   useEffect(() => {
     console.log('App mounting, checking mobile app status...');
@@ -96,7 +102,7 @@ function App() {
 
   const handleSendMessage = (text: string) => {
     if (!currentPeer) {
-      alert('Please select a peer to chat with');
+      showWarning('No Peer Selected', 'Please select a peer to chat with first.');
       return;
     }
 
@@ -114,7 +120,7 @@ function App() {
       setMessages(prev => [...prev, newMessage]);
     } catch (error) {
       console.error('Failed to send message:', error);
-      alert('Failed to send message');
+      showError('Message Failed', 'Failed to send message. Please check your connection.');
     }
   };
 
@@ -122,14 +128,16 @@ function App() {
     try {
       await network.connectToPeer(peerPublicKey);
       setCurrentPeer(peerPublicKey);
+      showSuccess('Connected', 'Successfully connected to peer!');
     } catch (error) {
       console.error('Failed to connect to peer:', error);
-      alert('Failed to connect to peer');
+      showError('Connection Failed', 'Failed to connect to peer. Please check the peer key and try again.');
     }
   };
 
   const handleGenerateNewKeys = async (): Promise<string | null> => {
-    if (confirm('Generating new keys will disconnect all current connections and create a new identity. Continue?')) {
+    // For now, keep using confirm dialog for this critical action
+    if (confirm('⚠️ SECURITY WARNING\n\nGenerating new keys will:\n• Disconnect all current connections\n• Create a completely new identity\n• Previous conversations cannot be recovered\n\nThis action cannot be undone. Continue?')) {
       try {
         setIsInitialized(false);
         setMessages([]);
@@ -141,13 +149,25 @@ function App() {
         setPublicKey(newPublicKey);
         setIsInitialized(true);
         
+        showSuccess('New Identity Created', 'Your cryptographic keys have been regenerated successfully.');
         return newPublicKey;
       } catch (error) {
         console.error('Failed to generate new keys:', error);
+        showError('Key Generation Failed', 'Failed to generate new cryptographic keys. Please try again.');
         return null;
       }
     }
     return null;
+  };
+
+  const handleVerifyPeer = (peerKey: string) => {
+    setPeerToVerify(peerKey);
+    setShowPeerVerification(true);
+  };
+
+  const handleCloseVerification = () => {
+    setShowPeerVerification(false);
+    setPeerToVerify('');
   };
 
   const renderTabContent = () => {
@@ -163,6 +183,7 @@ function App() {
             onConnectToPeer={handleConnectToPeer}
             onGenerateNewKeys={handleGenerateNewKeys}
             publicKey={publicKey}
+            onVerifyPeer={handleVerifyPeer}
           />
         );
       case 'peers':
@@ -173,8 +194,18 @@ function App() {
             onSelectPeer={setCurrentPeer}
             onConnectToPeer={handleConnectToPeer}
             onDisconnectPeer={(peer) => {
-              // TODO: Implement disconnect functionality
-              console.log('Disconnect peer:', peer);
+              try {
+                network.disconnect(peer);
+                // If the disconnected peer was the current peer, clear it
+                if (currentPeer === peer) {
+                  setCurrentPeer(null);
+                }
+                showSuccess('Peer Disconnected', 'Successfully disconnected from peer.');
+                console.log('Disconnected from peer:', peer);
+              } catch (error) {
+                console.error('Failed to disconnect from peer:', error);
+                showError('Disconnect Failed', 'Failed to disconnect from peer.');
+              }
             }}
           />
         );
@@ -205,6 +236,7 @@ function App() {
             onSendMessage={handleSendMessage}
             onConnectToPeer={handleConnectToPeer}
             publicKey={publicKey}
+            onVerifyPeer={handleVerifyPeer}
           />
         );
     }
@@ -225,8 +257,8 @@ function App() {
 
   return (
     <div className={`app ${isMobileApp ? 'mobile-app' : 'desktop-app'}`}>
-      {/* Minimal Header - Only Logo and Brand */}
-      <header className={`app-header ${isMobileApp ? 'mobile-header' : 'desktop-header'}`}>
+      {/* Stylized Header with Logo and Script Font */}
+      <header className="app-header">
         <div className="header-main">
           <div className="logo-container">
             <img src={gizliLogo} alt="Gizli Logo" className="app-logo" />
@@ -237,88 +269,11 @@ function App() {
         </div>
       </header>
 
-      {/* Desktop Layout - Sectioned View */}
+      {/* Desktop Layout - Single Active Section */}
       {!isMobileApp ? (
-        <div className="desktop-sections-container">
-          {/* Chat Section */}
-          <section className={`app-section chat-section ${activeTab === 'chat' ? 'active' : ''}`}>
-            <div className="section-header">
-              <h2>💬 Secure Chat</h2>
-              <p>End-to-end encrypted messaging</p>
-            </div>
-            <div className="section-content">
-              <ChatInterface
-                messages={messages.filter(m => 
-                  currentPeer && (m.sender === currentPeer || m.isOwn)
-                )}
-                currentPeer={currentPeer}
-                onSendMessage={handleSendMessage}
-                onConnectToPeer={handleConnectToPeer}
-                onGenerateNewKeys={handleGenerateNewKeys}
-                publicKey={publicKey}
-              />
-            </div>
-          </section>
-
-          {/* Peers Section */}
-          <section className={`app-section peers-section ${activeTab === 'peers' ? 'active' : ''}`}>
-            <div className="section-header">
-              <h2>👥 Peer Network</h2>
-              <p>Manage your secure connections</p>
-            </div>
-            <div className="section-content">
-              <PeerList
-                connectedPeers={Array.from(network.getConnectedPeers ? network.getConnectedPeers() : [])}
-                currentPeer={currentPeer}
-                onSelectPeer={setCurrentPeer}
-                onConnectToPeer={handleConnectToPeer}
-                onDisconnectPeer={(peer) => {
-                  console.log('Disconnect peer:', peer);
-                }}
-              />
-            </div>
-          </section>
-
-          {/* Developer Section */}
-          <section className={`app-section dev-section ${activeTab === 'dev' ? 'active' : ''}`}>
-            <div className="section-header">
-              <h2>⚡ Developer Console</h2>
-              <p>Network diagnostics and cryptographic tools</p>
-            </div>
-            <div className="section-content">
-              <DeveloperConsole 
-                isOpen={true}
-                onClose={() => setActiveTab('chat')} 
-                network={network}
-              />
-            </div>
-          </section>
-
-          {/* Entertainment Section */}
-          <section className={`app-section fun-section ${activeTab === 'fun' ? 'active' : ''}`}>
-            <div className="section-header">
-              <h2>🎮 Entertainment Hub</h2>
-              <p>Games and interactive features</p>
-            </div>
-            <div className="section-content">
-              <EntertainmentHub 
-                isOpen={true}
-                onClose={() => setActiveTab('chat')} 
-              />
-            </div>
-          </section>
-
-          {/* Info Section */}
-          <section className={`app-section info-section ${activeTab === 'info' ? 'active' : ''}`}>
-            <div className="section-header">
-              <h2>ℹ️ Information</h2>
-              <p>About Gizli and security features</p>
-            </div>
-            <div className="section-content">
-              <InfoPage onClose={() => setActiveTab('chat')} />
-            </div>
-          </section>
-        </div>
+        <main className="desktop-main">
+          {renderTabContent()}
+        </main>
       ) : (
         /* Mobile Layout - Single Tab Content */
         <main className="mobile-main">
@@ -359,6 +314,19 @@ function App() {
           ℹ️ Info
         </button>
       </nav>
+
+      {/* Notification System */}
+      <NotificationSystem 
+        notifications={notifications}
+        onRemoveNotification={removeNotification}
+      />
+
+      {/* Peer Verification Modal */}
+      <PeerVerification
+        peerKey={peerToVerify}
+        isVisible={showPeerVerification}
+        onClose={handleCloseVerification}
+      />
     </div>
   );
 }

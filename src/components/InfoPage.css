@@ -48,6 +48,25 @@
   text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
 }
 
+.close-btn {
+  background: linear-gradient(135deg, #00ff88, #00a2ff);
+  color: #000;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.close-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 255, 136, 0.3);
+}
+
 .info-subtitle {
   font-size: 1.1rem;
   color: rgba(255, 255, 255, 0.8);
@@ -67,6 +86,7 @@
   border: 1px solid rgba(0, 255, 136, 0.2);
   border-radius: 1rem;
   padding: 2rem;
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
 }
 
